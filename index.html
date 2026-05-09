@@ -1,1735 +1,2114 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="device">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Open Text</title>
+<title>Open Text — Device Connector</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
 <style>
-/* ─── TOKENS ─────────────────────────────── */
+/* ─── TOKENS ─────────────────────────────────────────── */
 :root {
-  --f:   'IBM Plex Sans', 'Helvetica Neue', sans-serif;
-  --fm:  'IBM Plex Mono', monospace;
-  --r:   8px;
-  --rl:  14px;
-  --e:   cubic-bezier(.4,0,.2,1);
-  --d:   .15s;
+  --bg:       #0a0c09;
+  --bg1:      #0e110d;
+  --bg2:      #141714;
+  --bg3:      #1a1f1a;
+  --grid:     rgba(74,222,128,.04);
+  --border:   rgba(74,222,128,.12);
+  --border2:  rgba(74,222,128,.24);
+  --border3:  rgba(74,222,128,.45);
+  --g0:       #4ade80;   /* green primary */
+  --g1:       #86efac;   /* green light */
+  --g2:       #166534;   /* green dim */
+  --g3:       rgba(74,222,128,.08);
+  --t0:       #e8f5e9;
+  --t1:       #a7c4a8;
+  --t2:       #4a6b4b;
+  --t3:       #2a3d2b;
+  --amber:    #fbbf24;
+  --amber-s:  rgba(251,191,36,.12);
+  --red:      #f87171;
+  --red-s:    rgba(248,113,113,.10);
+  --mono:     'Space Mono', monospace;
+  --sans:     'DM Sans', sans-serif;
+  --scan:     repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,.08) 2px,
+    rgba(0,0,0,.08) 4px
+  );
 }
 
-[data-theme="light"], [data-theme="device"] {
-  --bg:   #f1f0ec;
-  --bg1:  #e8e6df;
-  --bg2:  #dddad1;
-  --s0:   #ffffff;
-  --s1:   #f5f4ef;
-  --s2:   #ebebE4;
-  --b0:   rgba(0,0,0,.065);
-  --b1:   rgba(0,0,0,.10);
-  --b2:   rgba(0,0,0,.16);
-  --t0:   #18170e;
-  --t1:   #68655e;
-  --t2:   #9e9b94;
-  --acc:  #1746c6;
-  --ach:  #1038a8;
-  --acs:  rgba(23,70,198,.11);
-  --obg:  #1746c6;
-  --otx:  #fff;
-  --ibg:  #ffffff;
-  --itx:  #18170e;
-  --ok:   #166534;
-  --oks:  rgba(22,101,52,.11);
-  --er:   #b91c1c;
-  --ers:  rgba(185,28,28,.10);
-  --sh:   0 1px 3px rgba(0,0,0,.06),0 2px 10px rgba(0,0,0,.05);
-  --shl:  0 4px 24px rgba(0,0,0,.10),0 1px 4px rgba(0,0,0,.05);
-}
-
-@media (prefers-color-scheme: dark) {
-  [data-theme="device"] {
-    --bg:   #101010;
-    --bg1:  #181817;
-    --bg2:  #222221;
-    --s0:   #1b1b1a;
-    --s1:   #222221;
-    --s2:   #2a2a28;
-    --b0:   rgba(255,255,255,.057);
-    --b1:   rgba(255,255,255,.09);
-    --b2:   rgba(255,255,255,.15);
-    --t0:   #eceae2;
-    --t1:   #857f78;
-    --t2:   #4e4c48;
-    --acc:  #4d7bf4;
-    --ach:  #6b92f6;
-    --acs:  rgba(77,123,244,.15);
-    --obg:  #2650d0;
-    --otx:  #fff;
-    --ibg:  #2a2a28;
-    --itx:  #eceae2;
-    --ok:   #22c55e;
-    --oks:  rgba(34,197,94,.12);
-    --er:   #f87171;
-    --ers:  rgba(248,113,113,.12);
-    --sh:   0 1px 3px rgba(0,0,0,.3),0 2px 10px rgba(0,0,0,.2);
-    --shl:  0 4px 24px rgba(0,0,0,.45),0 1px 4px rgba(0,0,0,.2);
-  }
-}
-
-[data-theme="dark"] {
-  --bg:   #101010;
-  --bg1:  #181817;
-  --bg2:  #222221;
-  --s0:   #1b1b1a;
-  --s1:   #222221;
-  --s2:   #2a2a28;
-  --b0:   rgba(255,255,255,.057);
-  --b1:   rgba(255,255,255,.09);
-  --b2:   rgba(255,255,255,.15);
-  --t0:   #eceae2;
-  --t1:   #857f78;
-  --t2:   #4e4c48;
-  --acc:  #4d7bf4;
-  --ach:  #6b92f6;
-  --acs:  rgba(77,123,244,.15);
-  --obg:  #2650d0;
-  --otx:  #fff;
-  --ibg:  #2a2a28;
-  --itx:  #eceae2;
-  --ok:   #22c55e;
-  --oks:  rgba(34,197,94,.12);
-  --er:   #f87171;
-  --ers:  rgba(248,113,113,.12);
-  --sh:   0 1px 3px rgba(0,0,0,.3),0 2px 10px rgba(0,0,0,.2);
-  --shl:  0 4px 24px rgba(0,0,0,.45),0 1px 4px rgba(0,0,0,.2);
-}
-
-/* ─── RESET ──────────────────────────────── */
+/* ─── RESET ──────────────────────────────────────────── */
 *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
-html,body { height:100%; overflow:hidden; }
+html { height:100%; }
 body {
-  font-family: var(--f);
+  font-family: var(--sans);
   background: var(--bg);
   color: var(--t0);
-  font-size: 14px;
-  line-height: 1.5;
+  min-height: 100vh;
+  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
-  transition: background var(--d) var(--e), color var(--d) var(--e);
 }
-button { font-family:var(--f); cursor:pointer; border:none; background:none; outline:none; color:inherit; }
-input,textarea,select { font-family:var(--f); outline:none; color:inherit; }
-svg { display:block; flex-shrink:0; }
-* { scrollbar-width:thin; scrollbar-color:var(--b1) transparent; }
-*::-webkit-scrollbar { width:3px; height:3px; }
-*::-webkit-scrollbar-thumb { background:var(--b1); border-radius:2px; }
+button { font-family:var(--mono); cursor:pointer; border:none; background:none; outline:none; }
+input  { font-family:var(--mono); outline:none; }
+svg    { display:block; flex-shrink:0; }
+a      { color:var(--g0); text-decoration:none; }
+a:hover{ text-decoration:underline; }
 
-/* ─── ROOT LAYOUT ────────────────────────── */
-#root { display:flex; height:100vh; width:100vw; overflow:hidden; }
+/* ─── GRID BACKGROUND ────────────────────────────────── */
+body::before {
+  content:'';
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+body::after {
+  content:'';
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background: var(--scan);
+  opacity:.4;
+}
 
-/* ─── RAIL ───────────────────────────────── */
-#rail {
-  width:48px; flex-shrink:0;
-  background:var(--bg1);
-  border-right:1px solid var(--b0);
-  display:flex; flex-direction:column; align-items:center;
-  padding:10px 0 12px; gap:2px; z-index:20;
+/* ─── LAYOUT ─────────────────────────────────────────── */
+#app {
+  position:relative; z-index:1;
+  min-height:100vh;
+  display:flex; flex-direction:column;
+}
+
+/* ─── HEADER ─────────────────────────────────────────── */
+header {
+  border-bottom:1px solid var(--border);
+  padding:0 24px;
+  display:flex; align-items:center; gap:16px;
+  height:52px;
+  background: rgba(10,12,9,.85);
+  backdrop-filter:blur(12px);
+  position:sticky; top:0; z-index:50;
 }
 .logo {
-  width:28px; height:28px; border-radius:7px;
-  background:var(--t0); color:var(--bg);
+  display:flex; align-items:center; gap:10px;
+  font-family:var(--mono); font-size:13px; font-weight:700;
+  letter-spacing:.08em; color:var(--g0);
+}
+.logo-mark {
+  width:28px; height:28px; border-radius:6px;
+  background:var(--g0); color:var(--bg);
   display:flex; align-items:center; justify-content:center;
-  margin-bottom:10px; flex-shrink:0;
 }
-.rb {
-  width:34px; height:34px; border-radius:7px;
-  display:flex; align-items:center; justify-content:center;
-  color:var(--t2); transition:background var(--d), color var(--d);
+.header-right {
+  margin-left:auto;
+  display:flex; align-items:center; gap:12px;
 }
-.rb:hover { background:var(--s2); color:var(--t1); }
-.rb.on  { background:var(--acs); color:var(--acc); }
-.rspc { flex:1; }
-.rsep { width:20px; height:1px; background:var(--b1); margin:4px 0; }
-
-/* ─── SIDEBAR ────────────────────────────── */
-#sidebar {
-  width:248px; flex-shrink:0;
-  background:var(--s0);
-  border-right:1px solid var(--b0);
-  display:flex; flex-direction:column; overflow:hidden;
-}
-.pane { display:none; flex-direction:column; flex:1; overflow:hidden; min-height:0; }
-.pane.show { display:flex; }
-
-/* Sidebar head */
-.sph {
+.conn-pill {
   display:flex; align-items:center; gap:6px;
-  padding:12px 12px 7px; flex-shrink:0;
+  font-family:var(--mono); font-size:10px; letter-spacing:.08em;
+  padding:4px 10px; border-radius:4px;
+  border:1px solid var(--border);
+  color:var(--t2);
+  transition:all .2s;
 }
-.spt { font-size:13px; font-weight:600; letter-spacing:-.01em; flex:1; }
-.ib {
-  width:26px; height:26px; border-radius:6px;
-  display:flex; align-items:center; justify-content:center;
-  color:var(--t2); transition:background var(--d), color var(--d);
+.conn-pill.connected {
+  border-color:var(--border2);
+  color:var(--g0);
+  background:var(--g3);
 }
-.ib:hover { background:var(--s2); color:var(--t1); }
+.conn-pill.scanning {
+  border-color:var(--amber-s);
+  color:var(--amber);
+  background:var(--amber-s);
+}
+.pill-dot {
+  width:6px; height:6px; border-radius:50%;
+  background:currentColor;
+}
+.conn-pill.connected .pill-dot { animation:pulse 2s ease infinite; }
+.conn-pill.scanning  .pill-dot { animation:blink .8s ease infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(1.4)} }
+@keyframes blink  { 0%,100%{opacity:1} 50%{opacity:.2} }
 
-/* Search */
-.srow { padding:0 8px 8px; flex-shrink:0; }
-.sbox {
-  display:flex; align-items:center; gap:6px;
-  background:var(--bg1); border:1px solid var(--b0);
-  border-radius:var(--r); padding:6px 9px;
-  transition:border-color var(--d);
-}
-.sbox:focus-within { border-color:var(--b2); }
-.sbox input {
-  flex:1; background:none; border:none;
-  font-size:13px; min-width:0;
-}
-.sbox input::placeholder { color:var(--t2); }
-.sbox svg { color:var(--t2); flex-shrink:0; }
-
-/* Chat rows */
-#chatList { flex:1; overflow-y:auto; padding:2px 4px 8px; }
-.cr {
-  display:flex; align-items:center; gap:9px;
-  padding:7px 8px; border-radius:var(--r);
-  cursor:pointer; transition:background var(--d);
-  user-select:none;
-}
-.cr:hover { background:var(--s1); }
-.cr.on  { background:var(--acs); }
-.cr.on .cn { color:var(--acc); }
-
-.av {
-  width:34px; height:34px; border-radius:50%; flex-shrink:0;
-  display:flex; align-items:center; justify-content:center;
-  font-size:12px; font-weight:600; color:#fff;
-  letter-spacing:-.02em;
-}
-.av.grp { border-radius:9px; }
-.ci { flex:1; min-width:0; }
-.cn { font-size:13px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:var(--t0); line-height:1.3; }
-.cpv { font-size:12px; color:var(--t1); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:1px; }
-.cm { display:flex; flex-direction:column; align-items:flex-end; gap:3px; flex-shrink:0; }
-.ct { font-size:10.5px; color:var(--t2); font-family:var(--fm); }
-.ub {
-  background:var(--acc); color:#fff; border-radius:999px;
-  font-size:10px; font-weight:600; font-family:var(--fm);
-  padding:0 5px; min-width:17px; height:16px;
-  display:flex; align-items:center; justify-content:center;
+/* ─── MAIN ───────────────────────────────────────────── */
+main {
+  flex:1; display:flex; flex-direction:column;
+  padding:32px 24px 48px;
+  max-width:900px; margin:0 auto; width:100%;
 }
 
-/* ─── DEVICES PANE ───────────────────────── */
-#devList { flex:1; overflow-y:auto; padding:2px 8px 8px; }
-.dr {
-  background:var(--s1); border:1px solid var(--b0);
-  border-radius:var(--r); margin-bottom:6px;
-  padding:10px 10px 8px;
-}
-.dr-top { display:flex; align-items:center; gap:8px; margin-bottom:5px; }
-.dic {
-  width:30px; height:30px; border-radius:7px;
-  background:var(--s2); color:var(--t1);
-  display:flex; align-items:center; justify-content:center; flex-shrink:0;
-}
-.dn { font-size:13px; font-weight:500; flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.stag {
-  font-size:10.5px; font-family:var(--fm); font-weight:500;
-  padding:1px 6px; border-radius:4px; letter-spacing:.01em;
-}
-.stag-me  { background:var(--b1); color:var(--t1); }
-.stag-off { background:var(--b0); color:var(--t2); }
-.dr-note { font-size:11px; color:var(--t2); line-height:1.55; margin-top:5px; }
-.dbtns { display:flex; gap:4px; margin-top:7px; }
-.dbtn {
-  flex:1; padding:4px 0; border-radius:6px;
-  font-size:11.5px; font-weight:500;
-  background:var(--s2); color:var(--t1);
-  transition:background var(--d), color var(--d);
-}
-.dbtn:hover       { background:var(--bg2); color:var(--t0); }
-.dbtn.red:hover   { background:var(--ers); color:var(--er); }
-.dev-info-box {
-  margin:4px 8px 10px; padding:9px 11px;
-  background:var(--s1); border:1px solid var(--b0);
-  border-radius:var(--r);
-  font-size:11.5px; color:var(--t2); line-height:1.65;
-}
-
-/* ─── MAIN ───────────────────────────────── */
-#main { flex:1; display:flex; flex-direction:column; overflow:hidden; background:var(--bg); min-width:0; }
-
-/* ─── SETUP ──────────────────────────────── */
-#setup {
-  display:none; flex:1; flex-direction:column;
-  align-items:center; justify-content:center;
-  gap:5px; padding:48px 32px;
-}
-#setup.show { display:flex; }
-.su-ico {
-  width:46px; height:46px; border-radius:13px;
-  background:var(--s0); border:1px solid var(--b1);
-  display:flex; align-items:center; justify-content:center;
-  color:var(--t1); margin-bottom:10px;
-}
-.su-h { font-size:16px; font-weight:600; letter-spacing:-.02em; }
-.su-p { font-size:13px; color:var(--t1); text-align:center; max-width:258px; line-height:1.65; margin-top:2px; }
-.su-in {
-  width:268px; margin-top:8px; padding:9px 12px;
-  background:var(--s0); border:1px solid var(--b1);
-  border-radius:var(--r); font-size:14px;
-  transition:border-color var(--d);
-}
-.su-in:focus  { border-color:var(--acc); }
-.su-in::placeholder { color:var(--t2); }
-.su-note { font-size:11.5px; color:var(--t2); font-family:var(--fm); width:268px; margin-top:3px; line-height:1.55; }
-.btn-pri {
-  padding:9px 20px; border-radius:var(--r);
-  background:var(--acc); color:#fff;
-  font-size:13.5px; font-weight:500;
-  transition:background var(--d), transform .1s;
-  width:268px; margin-top:8px;
-}
-.btn-pri:hover  { background:var(--ach); }
-.btn-pri:active { transform:scale(.98); }
-
-/* ─── EMPTY ──────────────────────────────── */
-#empty {
-  display:none; flex:1; flex-direction:column;
-  align-items:center; justify-content:center;
-  gap:5px; padding:40px;
-}
-#empty.show { display:flex; }
-.em-ico {
-  width:46px; height:46px; border-radius:13px;
-  background:var(--s0); border:1px solid var(--b1);
-  display:flex; align-items:center; justify-content:center;
-  color:var(--t1); margin-bottom:10px;
-}
-.em-h { font-size:15px; font-weight:600; letter-spacing:-.02em; }
-.em-p { font-size:13px; color:var(--t1); text-align:center; max-width:220px; line-height:1.65; }
-
-/* ─── CHAT ───────────────────────────────── */
-#chat { display:none; flex:1; flex-direction:column; overflow:hidden; }
-#chat.show { display:flex; }
-
-/* Header */
-#chd {
-  height:50px; border-bottom:1px solid var(--b0);
-  background:var(--s0);
-  display:flex; align-items:center;
-  padding:0 14px; gap:10px; flex-shrink:0;
-}
-.chi { flex:1; min-width:0; }
-.chn { font-size:13.5px; font-weight:600; letter-spacing:-.01em; line-height:1.2; }
-.chm {
-  font-size:11px; color:var(--t2); font-family:var(--fm);
-  display:flex; align-items:center; gap:5px; margin-top:1px;
-}
-.chm-sep { width:2px; height:2px; border-radius:50%; background:var(--t2); }
-.hb {
-  width:30px; height:30px; border-radius:7px;
-  display:flex; align-items:center; justify-content:center;
-  color:var(--t2); transition:background var(--d), color var(--d);
-}
-.hb:hover { background:var(--s1); color:var(--t1); }
-
-/* Messages */
-#msgs {
-  flex:1; overflow-y:auto;
-  padding:14px 18px;
-  display:flex; flex-direction:column; gap:2px;
-}
-.dsep {
-  text-align:center; font-size:10.5px; font-family:var(--fm); color:var(--t2);
-  margin:8px 0 4px;
+/* ─── SECTION LABEL ──────────────────────────────────── */
+.sec-label {
+  font-family:var(--mono); font-size:9px; font-weight:700;
+  letter-spacing:.18em; text-transform:uppercase;
+  color:var(--g2); margin-bottom:12px;
   display:flex; align-items:center; gap:8px;
 }
-.dsep::before,.dsep::after { content:''; flex:1; height:1px; background:var(--b0); }
+.sec-label::after {
+  content:''; flex:1; height:1px; background:var(--border);
+}
 
-.mr { display:flex; align-items:flex-end; gap:6px; }
-.mr.out { flex-direction:row-reverse; }
-.mav {
-  width:22px; height:22px; border-radius:50%; flex-shrink:0;
-  font-size:9.5px; font-weight:700; color:#fff;
+/* ─── CONNECT PANEL ──────────────────────────────────── */
+#panel-connect {
+  animation:fadeUp .4s ease both;
+}
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(12px); }
+  to   { opacity:1; transform:none; }
+}
+
+.connect-grid {
+  display:grid; grid-template-columns:1fr 1fr; gap:16px;
+  margin-bottom:32px;
+}
+@media(max-width:600px){ .connect-grid{ grid-template-columns:1fr; } }
+
+.method-card {
+  background:var(--bg1); border:1px solid var(--border);
+  border-radius:8px; padding:20px;
+  cursor:pointer; transition:all .2s;
+  position:relative; overflow:hidden;
+}
+.method-card::before {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(135deg, var(--g3) 0%, transparent 60%);
+  opacity:0; transition:opacity .2s;
+}
+.method-card:hover { border-color:var(--border2); }
+.method-card:hover::before { opacity:1; }
+.method-card.active {
+  border-color:var(--border3);
+  background:var(--bg2);
+}
+.method-card.active::before { opacity:1; }
+.mc-icon {
+  width:36px; height:36px; border-radius:8px;
+  background:var(--bg3); border:1px solid var(--border);
   display:flex; align-items:center; justify-content:center;
-  margin-bottom:2px; letter-spacing:-.02em;
+  color:var(--g0); margin-bottom:14px;
 }
-.mav.gh { visibility:hidden; }
-.slbl { font-size:10.5px; font-family:var(--fm); color:var(--t2); padding-left:28px; margin-top:8px; margin-bottom:1px; }
+.mc-title {
+  font-family:var(--mono); font-size:12px; font-weight:700;
+  letter-spacing:.06em; color:var(--g1); margin-bottom:5px;
+}
+.mc-desc {
+  font-size:12px; color:var(--t1); line-height:1.6; font-weight:300;
+}
 
-.bub {
-  max-width:min(400px,66%);
-  padding:8px 12px; border-radius:14px;
-  font-size:14px; line-height:1.55;
-  word-break:break-word; position:relative;
+/* ─── MANUAL IP FORM ─────────────────────────────────── */
+.ip-form {
+  display:none; margin-top:24px;
+  animation:fadeUp .25s ease both;
 }
-.bub.in  { background:var(--ibg); color:var(--itx); border:1px solid var(--b0); border-bottom-left-radius:3px; }
-.bub.out { background:var(--obg); color:var(--otx); border-bottom-right-radius:3px; }
-.bub.fi  { border-top-left-radius:3px; }
-.bub.fo  { border-top-right-radius:3px; }
-.bub:hover .bts { opacity:1; }
-.bts {
-  display:block; font-size:9.5px; font-family:var(--fm);
-  opacity:0; transition:opacity .12s;
-  margin-top:3px; color:currentColor; opacity:.45; text-align:right;
-}
-.bub.in .bts { text-align:left; }
+.ip-form.show { display:block; }
 
-/* Voice bubble */
-.vbub { display:flex; align-items:center; gap:8px; padding:8px 12px; min-width:188px; max-width:256px; }
-.vpb {
-  width:27px; height:27px; border-radius:50%;
+.terminal-input-wrap {
+  display:flex; align-items:center; gap:0;
+  background:var(--bg1); border:1px solid var(--border);
+  border-radius:6px; overflow:hidden;
+  transition:border-color .2s;
+  margin-bottom:10px;
+}
+.terminal-input-wrap:focus-within { border-color:var(--border3); }
+.ti-prefix {
+  padding:10px 12px;
+  font-family:var(--mono); font-size:12px; color:var(--g2);
+  border-right:1px solid var(--border); background:var(--bg2);
+  white-space:nowrap;
+}
+.ti-input {
+  flex:1; background:none; border:none; color:var(--t0);
+  font-family:var(--mono); font-size:13px;
+  padding:10px 12px;
+  caret-color:var(--g0);
+}
+.ti-input::placeholder { color:var(--t3); }
+.ti-suffix {
+  padding:10px 12px;
+  font-family:var(--mono); font-size:11px; color:var(--t2);
+  border-left:1px solid var(--border);
+}
+
+.ip-hint {
+  font-family:var(--mono); font-size:10px; color:var(--t2);
+  margin-bottom:14px; line-height:1.8;
+}
+.ip-hint code {
+  color:var(--g1); background:var(--bg2);
+  padding:1px 5px; border-radius:3px;
+}
+
+/* ─── AUTO-SCAN PANEL ────────────────────────────────── */
+.scan-panel {
+  display:none; margin-top:24px;
+  animation:fadeUp .25s ease both;
+}
+.scan-panel.show { display:block; }
+.scan-log {
+  background:var(--bg1); border:1px solid var(--border);
+  border-radius:6px; padding:14px 16px;
+  height:180px; overflow-y:auto;
+  font-family:var(--mono); font-size:11px; line-height:1.9;
+}
+.scan-log::-webkit-scrollbar { width:3px; }
+.scan-log::-webkit-scrollbar-thumb { background:var(--border2); }
+.log-line { display:flex; gap:10px; }
+.log-ts   { color:var(--t3); flex-shrink:0; }
+.log-ok   { color:var(--g0); }
+.log-try  { color:var(--t2); }
+.log-err  { color:var(--red); }
+.log-warn { color:var(--amber); }
+
+/* ─── BUTTON ─────────────────────────────────────────── */
+.btn-primary {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:10px 20px; border-radius:5px;
+  background:var(--g0); color:var(--bg);
+  font-family:var(--mono); font-size:12px; font-weight:700;
+  letter-spacing:.06em;
+  transition:all .15s; cursor:pointer; border:none;
+}
+.btn-primary:hover { background:var(--g1); transform:translateY(-1px); }
+.btn-primary:active{ transform:translateY(0) scale(.98); }
+.btn-primary:disabled { opacity:.4; cursor:not-allowed; transform:none; }
+
+.btn-ghost {
+  display:inline-flex; align-items:center; gap:7px;
+  padding:9px 16px; border-radius:5px;
+  background:none; color:var(--g0);
+  font-family:var(--mono); font-size:11px;
+  border:1px solid var(--border2);
+  transition:all .15s; cursor:pointer;
+  letter-spacing:.04em;
+}
+.btn-ghost:hover { background:var(--g3); border-color:var(--border3); }
+
+.btn-row { display:flex; gap:10px; align-items:center; margin-top:16px; flex-wrap:wrap; }
+
+/* ─── CONNECTED VIEW ─────────────────────────────────── */
+#panel-connected { display:none; animation:fadeUp .35s ease both; }
+#panel-connected.show { display:block; }
+
+.status-bar {
+  background:var(--bg1); border:1px solid var(--border);
+  border-radius:8px; padding:16px 20px;
+  display:flex; align-items:center; gap:14px;
+  margin-bottom:24px;
+}
+.status-av {
+  width:40px; height:40px; border-radius:50%;
+  background:var(--g2); border:2px solid var(--border2);
   display:flex; align-items:center; justify-content:center;
-  flex-shrink:0; transition:transform var(--d); cursor:pointer;
+  color:var(--g0); font-family:var(--mono); font-size:14px;
+  font-weight:700; flex-shrink:0;
 }
-.vpb:hover { transform:scale(1.08); }
-.bub.out .vpb { background:rgba(255,255,255,.18); color:#fff; }
-.bub.in  .vpb { background:var(--acs); color:var(--acc); }
-.vwav { flex:1; height:22px; display:flex; align-items:center; gap:1.5px; }
-.vwav span { flex:1; border-radius:2px; background:currentColor; opacity:.4; }
-.vdur { font-size:10.5px; font-family:var(--fm); opacity:.6; flex-shrink:0; }
+.status-info { flex:1; min-width:0; }
+.status-name { font-family:var(--mono); font-size:13px; font-weight:700; color:var(--g1); }
+.status-meta { font-family:var(--mono); font-size:10px; color:var(--t2); margin-top:2px; }
+.status-actions { display:flex; gap:8px; }
 
-/* Image bubble */
-.ibub { padding:3px; }
-.ibub img { border-radius:12px; max-width:240px; width:100%; display:block; }
+/* ─── MESH MAP ───────────────────────────────────────── */
+.mesh-canvas-wrap {
+  background:var(--bg1); border:1px solid var(--border);
+  border-radius:8px; overflow:hidden; position:relative;
+  margin-bottom:24px;
+}
+.mesh-canvas-label {
+  position:absolute; top:12px; left:14px;
+  font-family:var(--mono); font-size:9px; letter-spacing:.14em;
+  color:var(--g2); text-transform:uppercase;
+}
+canvas#meshCanvas {
+  display:block; width:100%; height:220px;
+}
 
-/* Video bubble */
-.vvbub { padding:3px; cursor:pointer; }
-.vvth { border-radius:12px; overflow:hidden; max-width:240px; position:relative; }
-.vvth img { width:100%; display:block; }
-.vvpl {
-  position:absolute; inset:0;
+/* ─── CONVERSATIONS ──────────────────────────────────── */
+.convo-list {
+  background:var(--bg1); border:1px solid var(--border);
+  border-radius:8px; overflow:hidden; margin-bottom:24px;
+}
+.convo-row {
+  display:flex; align-items:center; gap:12px;
+  padding:11px 16px;
+  border-bottom:1px solid var(--border);
+  cursor:pointer; transition:background .15s;
+}
+.convo-row:last-child { border-bottom:none; }
+.convo-row:hover { background:var(--bg2); }
+.convo-row.active { background:var(--bg3); }
+.cr-av {
+  width:32px; height:32px; border-radius:50%; flex-shrink:0;
   display:flex; align-items:center; justify-content:center;
-  background:rgba(0,0,0,.32); border-radius:12px; color:#fff;
+  font-family:var(--mono); font-size:11px; font-weight:700;
+  color:#fff;
 }
+.cr-av.group { border-radius:9px; }
+.cr-body { flex:1; min-width:0; }
+.cr-name { font-size:13px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.cr-prev { font-family:var(--mono); font-size:10px; color:var(--t2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:1px; }
+.cr-meta { font-family:var(--mono); font-size:10px; color:var(--t2); flex-shrink:0; }
+.cr-badge {
+  background:var(--g0); color:var(--bg); border-radius:999px;
+  font-family:var(--mono); font-size:9px; font-weight:700;
+  padding:1px 6px; min-width:16px; text-align:center;
+}
+.convo-empty {
+  padding:28px; text-align:center;
+  font-family:var(--mono); font-size:11px; color:var(--t2);
+  line-height:2;
+}
+
+/* ─── CHAT PANE ──────────────────────────────────────── */
+#chat-pane {
+  display:none; flex-direction:column;
+  background:var(--bg1); border:1px solid var(--border);
+  border-radius:8px; overflow:hidden; margin-bottom:24px;
+  min-height:400px;
+}
+#chat-pane.show { display:flex; }
+
+.chat-hd {
+  height:46px; border-bottom:1px solid var(--border);
+  display:flex; align-items:center; padding:0 14px; gap:10px;
+  flex-shrink:0;
+}
+.chat-hd-name { font-family:var(--mono); font-size:12px; font-weight:700; color:var(--g1); flex:1; }
+.chat-close {
+  width:24px; height:24px; border-radius:5px;
+  display:flex; align-items:center; justify-content:center;
+  color:var(--t2); cursor:pointer; transition:all .15s;
+  font-size:14px;
+}
+.chat-close:hover { background:var(--bg3); color:var(--t0); }
+
+.chat-msgs {
+  flex:1; overflow-y:auto; padding:14px 16px;
+  display:flex; flex-direction:column; gap:2px;
+}
+.chat-msgs::-webkit-scrollbar { width:3px; }
+.chat-msgs::-webkit-scrollbar-thumb { background:var(--border); }
+
+.cm-dsep {
+  text-align:center; font-family:var(--mono); font-size:9px; color:var(--t3);
+  margin:8px 0; display:flex; align-items:center; gap:8px;
+}
+.cm-dsep::before,.cm-dsep::after { content:''; flex:1; height:1px; background:var(--border); }
+
+.cm-row { display:flex; align-items:flex-end; gap:6px; }
+.cm-row.out { flex-direction:row-reverse; }
+.cm-av {
+  width:20px; height:20px; border-radius:50%; flex-shrink:0;
+  font-family:var(--mono); font-size:8px; font-weight:700; color:#fff;
+  display:flex; align-items:center; justify-content:center;
+  margin-bottom:2px;
+}
+.cm-av.g { visibility:hidden; }
+.cm-sender { font-family:var(--mono); font-size:9px; color:var(--t2); padding-left:26px; margin-top:7px; margin-bottom:1px; }
+
+.cm-bub {
+  max-width:min(360px,68%);
+  padding:7px 11px; border-radius:12px;
+  font-size:13px; line-height:1.55; word-break:break-word;
+}
+.cm-bub.in  { background:var(--bg3); color:var(--t0); border:1px solid var(--border); border-bottom-left-radius:3px; }
+.cm-bub.out { background:var(--g0); color:var(--bg); border-bottom-right-radius:3px; font-weight:500; }
+.cm-bub.first-in  { border-top-left-radius:3px; }
+.cm-bub.first-out { border-top-right-radius:3px; }
+.cm-ts { display:block; font-family:var(--mono); font-size:8px; opacity:.5; margin-top:3px; text-align:right; }
+.cm-bub.in .cm-ts { text-align:left; }
+
+.cm-voice {
+  display:flex; align-items:center; gap:8px;
+  padding:7px 11px; min-width:170px; max-width:240px;
+}
+.cm-vpbtn {
+  width:24px; height:24px; border-radius:50%; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; transition:transform .15s;
+}
+.cm-vpbtn:hover { transform:scale(1.1); }
+.cm-bub.out .cm-vpbtn { background:rgba(0,0,0,.15); color:var(--bg); }
+.cm-bub.in  .cm-vpbtn { background:var(--border); color:var(--g0); }
+.cm-wave { flex:1; height:20px; display:flex; align-items:center; gap:1.5px; }
+.cm-wave span { flex:1; border-radius:2px; background:currentColor; opacity:.4; }
+
+.chat-compose {
+  border-top:1px solid var(--border); padding:10px 12px;
+  display:flex; align-items:flex-end; gap:8px;
+  flex-shrink:0;
+}
+.compose-ta {
+  flex:1; background:var(--bg2); border:1px solid var(--border);
+  border-radius:8px; padding:8px 11px;
+  color:var(--t0); font-family:var(--sans); font-size:13px;
+  resize:none; min-height:38px; max-height:100px; line-height:1.5;
+  transition:border-color .15s;
+}
+.compose-ta::placeholder { color:var(--t3); font-family:var(--mono); font-size:11px; }
+.compose-ta:focus { border-color:var(--border2); outline:none; }
+.compose-send {
+  width:36px; height:36px; border-radius:8px;
+  background:var(--g0); color:var(--bg);
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; transition:all .15s; border:none; flex-shrink:0;
+}
+.compose-send:hover { background:var(--g1); }
+.compose-send:active { transform:scale(.9); }
+.compose-send:disabled { opacity:.4; cursor:not-allowed; }
 
 /* Typing indicator */
-.typing { display:flex; align-items:flex-end; gap:6px; animation:fin .18s ease; }
-.tbub {
-  background:var(--ibg); border:1px solid var(--b0);
-  border-radius:14px 14px 14px 3px;
-  padding:9px 12px; display:flex; gap:4px; align-items:center;
+.typing-row { display:flex; align-items:flex-end; gap:6px; animation:fadeUp .2s ease; }
+.typing-bub {
+  background:var(--bg3); border:1px solid var(--border);
+  border-radius:12px 12px 12px 3px;
+  padding:8px 12px; display:flex; gap:4px; align-items:center;
 }
-.td { width:5px; height:5px; border-radius:50%; background:var(--t2); animation:tb 1.3s ease-in-out infinite; }
-.td:nth-child(2) { animation-delay:.14s; }
-.td:nth-child(3) { animation-delay:.28s; }
-@keyframes tb  { 0%,60%,100%{transform:translateY(0);opacity:.4} 30%{transform:translateY(-5px);opacity:1} }
-@keyframes fin { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:none} }
+.tyd { width:5px; height:5px; border-radius:50%; background:var(--g2); animation:tdb 1.3s ease-in-out infinite; }
+.tyd:nth-child(2){ animation-delay:.15s; }
+.tyd:nth-child(3){ animation-delay:.3s; }
+@keyframes tdb { 0%,60%,100%{transform:translateY(0);opacity:.35} 30%{transform:translateY(-5px);opacity:1} }
 
-/* ─── COMPOSE ────────────────────────────── */
-#compose {
-  padding:9px 12px 11px;
-  border-top:1px solid var(--b0);
-  background:var(--s0); flex-shrink:0;
+/* ─── DEVICES SECTION ────────────────────────────────── */
+.device-grid {
+  display:grid; grid-template-columns:repeat(auto-fill, minmax(200px,1fr));
+  gap:10px; margin-bottom:32px;
 }
-.recbar {
-  display:none; align-items:center; gap:7px;
-  padding:6px 10px; margin-bottom:7px;
-  background:var(--ers); border-radius:6px;
-  color:var(--er); font-size:12px; font-family:var(--fm);
+.dev-card {
+  background:var(--bg1); border:1px solid var(--border);
+  border-radius:8px; padding:14px;
+  transition:border-color .2s;
 }
-.recbar.on { display:flex; }
-.recdot { width:7px; height:7px; border-radius:50%; background:var(--er); animation:blink 1s ease infinite; }
-@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
-.mbar { display:flex; gap:5px; flex-wrap:wrap; padding-bottom:7px; }
-.mbar:empty { display:none; }
-.mth {
-  width:50px; height:50px; border-radius:7px;
-  overflow:hidden; position:relative;
-  background:var(--s2); border:1px solid var(--b0);
+.dev-card:hover { border-color:var(--border2); }
+.dev-top { display:flex; align-items:center; gap:9px; margin-bottom:8px; }
+.dev-ico {
+  width:28px; height:28px; border-radius:6px;
+  background:var(--bg3); border:1px solid var(--border);
+  display:flex; align-items:center; justify-content:center; color:var(--g0);
 }
-.mth img,.mth video { width:100%; height:100%; object-fit:cover; }
-.mthrm {
-  position:absolute; inset:0;
-  background:rgba(0,0,0,.48);
-  display:none; align-items:center; justify-content:center;
-  color:#fff; font-size:14px; cursor:pointer;
+.dev-name { font-family:var(--mono); font-size:11px; font-weight:700; color:var(--g1); flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.dev-status-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+.dev-status-dot.on  { background:var(--g0); animation:pulse 2.5s ease infinite; }
+.dev-status-dot.off { background:var(--t3); }
+.dev-tags { display:flex; gap:4px; flex-wrap:wrap; }
+.dtag {
+  font-family:var(--mono); font-size:9px; font-weight:700;
+  padding:1px 6px; border-radius:3px; letter-spacing:.05em;
 }
-.mth:hover .mthrm { display:flex; }
+.dtag-me   { background:var(--border); color:var(--t1); }
+.dtag-wifi { background:rgba(74,222,128,.14); color:var(--g0); }
+.dtag-off  { background:var(--bg3); color:var(--t3); }
 
-.cbox {
-  display:flex; align-items:flex-end; gap:5px;
-  background:var(--bg1); border:1px solid var(--b0);
-  border-radius:11px; padding:6px 7px 6px 11px;
-  transition:border-color var(--d);
+/* ─── DISCONNECT ─────────────────────────────────────── */
+.disconnect-row {
+  display:flex; align-items:center; gap:12px;
+  padding:14px 18px;
+  background:var(--bg1); border:1px solid var(--border);
+  border-radius:8px;
 }
-.cbox:focus-within { border-color:var(--b2); }
-.cta {
-  flex:1; background:none; border:none; color:var(--t0);
-  font-size:14px; resize:none; min-height:22px; max-height:120px;
-  line-height:1.55; padding:2px 0;
+.dr-text { flex:1; font-family:var(--mono); font-size:11px; color:var(--t2); line-height:1.7; }
+.btn-red {
+  padding:8px 16px; border-radius:5px;
+  background:var(--red-s); color:var(--red);
+  font-family:var(--mono); font-size:11px; font-weight:700;
+  border:1px solid rgba(248,113,113,.2);
+  transition:all .15s; cursor:pointer;
+  letter-spacing:.05em;
 }
-.cta::placeholder { color:var(--t2); }
-.cacts { display:flex; gap:2px; align-items:flex-end; padding-bottom:1px; }
-.cb {
-  width:30px; height:30px; border-radius:6px;
-  display:flex; align-items:center; justify-content:center;
-  color:var(--t2); transition:background var(--d), color var(--d);
-}
-.cb:hover { background:var(--s2); color:var(--t1); }
-.cb.ron { color:var(--er); }
-.sb {
-  width:30px; height:30px; border-radius:7px;
-  background:var(--acc); color:#fff;
-  display:flex; align-items:center; justify-content:center;
-  transition:background var(--d), transform .1s;
-}
-.sb:hover  { background:var(--ach); }
-.sb:active { transform:scale(.9); }
+.btn-red:hover { background:var(--red); color:#0a0c09; }
 
-/* ─── SETTINGS ───────────────────────────── */
-#settings { display:none; flex:1; flex-direction:column; overflow:hidden; }
-#settings.show { display:flex; }
-.shd {
-  height:50px; border-bottom:1px solid var(--b0); background:var(--s0);
-  display:flex; align-items:center; padding:0 16px; flex-shrink:0;
+/* ─── FOOTER ─────────────────────────────────────────── */
+footer {
+  border-top:1px solid var(--border);
+  padding:16px 24px;
+  display:flex; align-items:center; justify-content:space-between;
+  font-family:var(--mono); font-size:9px; color:var(--t3);
+  letter-spacing:.08em; flex-wrap:wrap; gap:8px;
 }
-.shdtitle { font-size:13.5px; font-weight:600; letter-spacing:-.01em; }
-.sbody { flex:1; overflow-y:auto; padding:14px 16px 32px; }
+.footer-r { display:flex; gap:16px; }
 
-.ss { margin-bottom:18px; }
-.ss-lbl {
-  font-size:10px; font-family:var(--fm); color:var(--t2);
-  text-transform:uppercase; letter-spacing:.10em;
-  padding:0 2px; margin-bottom:5px;
-}
-.sc { background:var(--s0); border:1px solid var(--b0); border-radius:var(--rl); overflow:hidden; }
-.sr {
-  display:flex; align-items:center; gap:10px;
-  padding:11px 14px; border-bottom:1px solid var(--b0);
-}
-.sr:last-child { border-bottom:none; }
-.sri { flex:1; min-width:0; }
-.srl { font-size:13px; font-weight:500; color:var(--t0); }
-.srd { font-size:12px; color:var(--t1); margin-top:2px; line-height:1.5; }
-
-/* Toggle */
-.tog {
-  width:38px; height:21px; border-radius:11px;
-  background:var(--bg2); cursor:pointer;
-  position:relative; transition:background var(--d);
-  flex-shrink:0; border:1px solid var(--b1);
-}
-.tog.on { background:var(--acc); border-color:var(--acc); }
-.tog::after {
-  content:''; position:absolute;
-  width:15px; height:15px; border-radius:50%;
-  background:#fff; top:2px; left:2px;
-  transition:transform var(--d);
-  box-shadow:0 1px 3px rgba(0,0,0,.18);
-}
-.tog.on::after { transform:translateX(17px); }
-
-/* Theme picker */
-.thopts { display:flex; gap:4px; }
-.thopt {
-  flex:1; padding:6px 6px; border-radius:6px;
-  border:1.5px solid var(--b1); font-size:12px; font-weight:500;
-  background:var(--s1); color:var(--t1);
-  transition:all var(--d); cursor:pointer; text-align:center;
-}
-.thopt.on  { border-color:var(--acc); background:var(--acs); color:var(--acc); }
-.thopt:hover:not(.on) { background:var(--s2); }
-
-/* Swatches */
-.swatches { display:flex; gap:5px; flex-wrap:wrap; }
-.sw {
-  width:22px; height:22px; border-radius:50%; cursor:pointer;
-  border:2px solid transparent;
-  transition:transform var(--d), border-color var(--d);
-}
-.sw:hover { transform:scale(1.18); }
-.sw.on    { border-color:var(--t0); transform:scale(1.1); }
-
-/* Select */
-.ssel {
-  padding:6px 9px; background:var(--s1);
-  border:1px solid var(--b1); border-radius:6px;
-  font-size:12.5px; cursor:pointer; min-width:120px; color:var(--t0);
-}
-.ssel:focus { border-color:var(--acc); }
-
-/* Settings input */
-.sinp {
-  flex:1; max-width:196px; padding:6px 10px;
-  background:var(--s1); border:1px solid var(--b1);
-  border-radius:6px; font-size:13px;
-  transition:border-color var(--d);
-}
-.sinp:focus { border-color:var(--acc); }
-.sinp::placeholder { color:var(--t2); }
-
-/* Scope buttons */
-.scope { display:flex; gap:3px; }
-.scb {
-  padding:4px 8px; border-radius:5px;
-  font-size:11px; font-weight:500;
-  border:1.5px solid var(--b1); background:var(--s1); color:var(--t1);
-  transition:all var(--d); cursor:pointer;
-}
-.scb.on { border-color:var(--acc); background:var(--acs); color:var(--acc); }
-
-/* Save badge */
-.sbadge { font-size:11px; font-family:var(--fm); color:var(--ok); opacity:0; transition:opacity .15s; }
-.sbadge.show { opacity:1; animation:fo 2s .3s forwards; }
-@keyframes fo { to{opacity:0} }
-
-.btn-d {
-  padding:6px 13px; border-radius:6px;
-  background:var(--ers); color:var(--er);
-  font-size:12px; font-weight:500;
-  transition:background var(--d), color var(--d);
-}
-.btn-d:hover { background:var(--er); color:#fff; }
-
-/* ─── MODALS ─────────────────────────────── */
-.mbg {
-  display:none; position:fixed; inset:0; z-index:200;
-  background:rgba(0,0,0,.36);
-  backdrop-filter:blur(6px);
-  align-items:center; justify-content:center; padding:20px;
-}
-.mbg.open { display:flex; }
-.mbox {
-  background:var(--s0); border:1px solid var(--b1);
-  border-radius:var(--rl); padding:22px;
-  width:336px; max-width:100%;
-  box-shadow:var(--shl);
-  animation:mpop .15s var(--e);
-}
-@keyframes mpop { from{opacity:0;transform:scale(.96) translateY(5px)} to{opacity:1;transform:none} }
-.mt  { font-size:15px; font-weight:600; letter-spacing:-.02em; margin-bottom:7px; }
-.md  { font-size:13px; color:var(--t1); line-height:1.6; margin-bottom:18px; }
-.mi  {
-  width:100%; padding:8px 11px; margin-bottom:12px;
-  background:var(--s1); border:1px solid var(--b1);
-  border-radius:6px; font-size:13.5px;
-  transition:border-color var(--d);
-}
-.mi:focus { border-color:var(--acc); }
-.mi::placeholder { color:var(--t2); }
-.mrow { display:flex; gap:5px; margin-bottom:12px; }
-.mtype {
-  flex:1; padding:7px; border-radius:6px;
-  border:1.5px solid var(--b1);
-  font-size:12.5px; font-weight:500;
-  background:var(--s1); color:var(--t1); text-align:center;
-  cursor:pointer; transition:all var(--d);
-  display:flex; align-items:center; justify-content:center; gap:5px;
-}
-.mtype.on { border-color:var(--acc); background:var(--acs); color:var(--acc); }
-.macts { display:flex; justify-content:flex-end; gap:7px; }
-.btn-can {
-  padding:7px 14px; border-radius:6px;
-  background:var(--s2); color:var(--t1);
-  font-size:13px; font-weight:500;
-  border:1px solid var(--b1); transition:background var(--d);
-}
-.btn-can:hover { background:var(--bg2); }
-.btn-ok {
-  padding:7px 14px; border-radius:6px;
-  background:var(--acc); color:#fff;
-  font-size:13px; font-weight:500; transition:background var(--d);
-}
-.btn-ok:hover { background:var(--ach); }
-.btn-ok.danger { background:var(--er); }
-.btn-ok.danger:hover { opacity:.88; }
-
-/* ─── TOASTS ─────────────────────────────── */
+/* ─── TOAST ──────────────────────────────────────────── */
 #toasts {
-  position:fixed; bottom:18px; right:18px;
-  display:flex; flex-direction:column; gap:6px;
-  z-index:300; pointer-events:none;
+  position:fixed; bottom:20px; right:20px;
+  display:flex; flex-direction:column; gap:7px; z-index:200;
+  pointer-events:none;
 }
 .toast {
-  background:var(--s0); border:1px solid var(--b1);
-  border-radius:var(--r); padding:9px 13px;
-  font-size:13px; font-weight:500;
-  box-shadow:var(--shl);
-  display:flex; align-items:center; gap:7px;
-  animation:tin .18s var(--e); max-width:256px;
+  background:var(--bg2); border:1px solid var(--border2);
+  border-radius:6px; padding:9px 14px;
+  font-family:var(--mono); font-size:11px; color:var(--t0);
+  display:flex; align-items:center; gap:8px;
+  animation:fadeUp .18s ease; max-width:280px;
+  box-shadow:0 4px 24px rgba(0,0,0,.5);
 }
-@keyframes tin { from{opacity:0;transform:translateX(10px)} to{opacity:1;transform:none} }
-.tdot { width:5px; height:5px; border-radius:50%; flex-shrink:0; }
-.toast.ok   .tdot { background:var(--ok); }
-.toast.info .tdot { background:var(--acc); }
-.toast.err  .tdot { background:var(--er); }
+.toast.ok   { border-color:rgba(74,222,128,.3);  color:var(--g1); }
+.toast.err  { border-color:rgba(248,113,113,.3); color:var(--red); }
+.toast.warn { border-color:rgba(251,191,36,.3);  color:var(--amber); }
+.toast-dot { width:5px; height:5px; border-radius:50%; background:currentColor; flex-shrink:0; }
+
+/* ─── RESPONSIVE ─────────────────────────────────────── */
+@media(max-width:480px) {
+  main { padding:20px 14px 40px; }
+  .connect-grid { grid-template-columns:1fr; }
+}
 </style>
 </head>
 <body>
-<div id="root">
+<div id="app">
 
-<!-- ─── RAIL ──────────────────────────────── -->
-<div id="rail">
-  <div class="logo">
-    <!-- Speech bubble -->
-    <svg width="15" height="15" viewBox="0 0 15 15" fill="currentColor">
-      <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h10A1.5 1.5 0 0 1 14 2.5v7A1.5 1.5 0 0 1 12.5 11H8.5l-3 2.5V11H2.5A1.5 1.5 0 0 1 1 9.5v-7z"/>
-    </svg>
-  </div>
-
-  <!-- Messages button -->
-  <button class="rb on" id="rb-chats" onclick="switchPanel('chats',this)" title="Messages">
-    <svg width="16" height="16" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h10A1.5 1.5 0 0 1 14 2.5v7A1.5 1.5 0 0 1 12.5 11H8.5l-3 2.5V11H2.5A1.5 1.5 0 0 1 1 9.5v-7z"/>
-    </svg>
-  </button>
-
-  <!-- Devices button -->
-  <button class="rb" id="rb-devices" onclick="switchPanel('devices',this)" title="Devices">
-    <svg width="16" height="16" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-      <rect x=".75" y="3.25" width="9" height="7.5" rx="1.2"/>
-      <path d="M9.75 6H12.5a1.25 1.25 0 0 1 1.25 1.25v2a1.25 1.25 0 0 1-1.25 1.25H9.75"/>
-      <circle cx="4.75" cy="12.75" r=".75" fill="currentColor" stroke="none"/>
-      <path d="M3 14h3.5"/>
-    </svg>
-  </button>
-
-  <div class="rspc"></div>
-  <div class="rsep"></div>
-
-  <!-- Settings button -->
-  <button class="rb" id="rb-settings" onclick="switchPanel('settings',this)" title="Settings">
-    <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round">
-      <path d="M6.2 1.3l-.45 1.7A4.5 4.5 0 0 0 4 4.2L2.3 3.85l-.9 1.55 1.25 1.2A4.5 4.5 0 0 0 2.5 7.5c0 .32.05.62.15.9L1.4 9.6l.9 1.55 1.7-.35A4.5 4.5 0 0 0 5.75 12l.45 1.7h1.6l.45-1.7a4.5 4.5 0 0 0 1.75-1.2l1.7.35.9-1.55-1.25-1.2c.1-.28.15-.58.15-.9 0-.32-.05-.62-.15-.9l1.25-1.2L11.7 3.85l-1.7.35A4.5 4.5 0 0 0 8.25 3l-.45-1.7H6.2z"/>
-      <circle cx="7.5" cy="7.5" r="2"/>
-    </svg>
-  </button>
-
-  <!-- Theme cycle button -->
-  <button class="rb" onclick="cycleTheme()" title="Toggle theme">
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
-      <circle cx="7" cy="7" r="3"/>
-      <path d="M7 1v1.2M7 11.8V13M1 7h1.2M11.8 7H13M2.8 2.8l.85.85M10.35 10.35l.85.85M10.35 3.65l-.85.85M3.65 10.35l-.85.85"/>
-    </svg>
-  </button>
-</div>
-
-<!-- ─── SIDEBAR ───────────────────────────── -->
-<div id="sidebar">
-
-  <!-- Chats pane -->
-  <div class="pane show" id="pane-chats">
-    <div class="sph">
-      <span class="spt">Messages</span>
-      <button class="ib" onclick="openNewConvo()" title="New conversation">
-        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
-          <path d="M6.5 1v11M1 6.5h11"/>
+  <!-- Header -->
+  <header>
+    <div class="logo">
+      <div class="logo-mark">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
+          <path d="M1 1.5A.5.5 0 0 1 1.5 1h11a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5H8L5.5 11.5V9H1.5a.5.5 0 0 1-.5-.5v-7z"/>
         </svg>
-      </button>
+      </div>
+      OPEN TEXT
     </div>
-    <div class="srow">
-      <div class="sbox">
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
-          <circle cx="5.5" cy="5.5" r="4"/><path d="M9 9l2.5 2.5"/>
-        </svg>
-        <input type="text" placeholder="Search" id="searchInp" oninput="filterChats(this.value)">
+    <div class="header-right">
+      <div class="conn-pill" id="conn-pill">
+        <span class="pill-dot"></span>
+        <span id="conn-label">DISCONNECTED</span>
       </div>
     </div>
-    <div id="chatList"></div>
-  </div>
+  </header>
 
-  <!-- Devices pane -->
-  <div class="pane" id="pane-devices">
-    <div class="sph"><span class="spt">Devices</span></div>
-    <div id="devList"></div>
-    <div class="dev-info-box">
-      Other devices running Open Text on the same local network will appear here automatically. Messages are sent through the first device with the right capability — one at a time, no duplicates.
-    </div>
-  </div>
+  <!-- Main -->
+  <main>
 
-</div><!-- /sidebar -->
+    <!-- ── CONNECT PANEL ───────────────────────────── -->
+    <div id="panel-connect">
+      <div class="sec-label">DEVICE CONNECTOR</div>
 
-<!-- ─── MAIN ──────────────────────────────── -->
-<div id="main">
+      <p style="font-size:13px;color:var(--t1);line-height:1.75;margin-bottom:24px;max-width:600px;font-weight:300;">
+        Connect this device to the Open Text mesh running on your local network.
+        Both devices must be on the same Wi-Fi. The desktop app must be running.
+      </p>
 
-  <!-- Setup screen -->
-  <div id="setup">
-    <div class="su-ico">
-      <svg width="22" height="22" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
-        <circle cx="10" cy="6" r="3.5"/>
-        <path d="M3.5 18c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/>
-      </svg>
-    </div>
-    <div class="su-h">Set up Open Text</div>
-    <div class="su-p">Enter your name and phone number. Everything is stored locally — nothing leaves your device.</div>
-    <input class="su-in" id="su-name"  type="text" placeholder="Your name" autocomplete="name">
-    <input class="su-in" id="su-phone" type="tel"  placeholder="Phone number" autocomplete="tel">
-    <div class="su-note">Your number is used to identify which connected device has messaging capability for outgoing messages.</div>
-    <button class="btn-pri" onclick="finishSetup()">Get started</button>
-  </div>
-
-  <!-- Empty state -->
-  <div id="empty">
-    <div class="em-ico">
-      <svg width="22" height="22" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h10A1.5 1.5 0 0 1 14 2.5v7A1.5 1.5 0 0 1 12.5 11H8.5l-3 2.5V11H2.5A1.5 1.5 0 0 1 1 9.5v-7z"/>
-      </svg>
-    </div>
-    <div class="em-h">No conversation open</div>
-    <div class="em-p">Choose one from the list or start a new conversation.</div>
-    <button class="btn-pri" onclick="openNewConvo()" style="width:auto;padding:9px 20px;margin-top:12px">New conversation</button>
-  </div>
-
-  <!-- Chat view -->
-  <div id="chat">
-    <div id="chd"></div>
-    <div id="msgs"></div>
-    <div id="compose">
-      <div class="recbar" id="recbar">
-        <span class="recdot"></span>
-        Recording — <span id="rectime">0:00</span>
-        <button onclick="stopRec()" style="margin-left:auto;background:var(--er);color:#fff;padding:2px 8px;border-radius:5px;font-size:11px;font-family:var(--fm)">Stop</button>
+      <div class="sec-label">CONNECTION METHOD</div>
+      <div class="connect-grid">
+        <div class="method-card active" id="mc-manual" onclick="selectMethod('manual')">
+          <div class="mc-icon">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+              <rect x="1" y="3" width="16" height="12" rx="1.5"/>
+              <path d="M5 7h2M5 10h2M9 7h4M9 10h4"/>
+            </svg>
+          </div>
+          <div class="mc-title">MANUAL IP</div>
+          <div class="mc-desc">Enter the IP address of your computer running Open Text. Reliable, works on any network.</div>
+        </div>
+        <div class="method-card" id="mc-scan" onclick="selectMethod('scan')">
+          <div class="mc-icon">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+              <circle cx="9" cy="9" r="2"/>
+              <path d="M3 9a6 6 0 0 1 6-6M15 9a6 6 0 0 1-6 6M3 9a6 6 0 0 0 6 6M15 9a6 6 0 0 0-6-6"/>
+              <circle cx="9" cy="3" r=".8" fill="currentColor" stroke="none"/>
+              <circle cx="9" cy="15" r=".8" fill="currentColor" stroke="none"/>
+              <circle cx="3" cy="9" r=".8" fill="currentColor" stroke="none"/>
+              <circle cx="15" cy="9" r=".8" fill="currentColor" stroke="none"/>
+            </svg>
+          </div>
+          <div class="mc-title">AUTO SCAN</div>
+          <div class="mc-desc">Scan the local subnet for Open Text instances. Works on home networks (/24 subnet).</div>
+        </div>
       </div>
-      <div class="mbar" id="mbar"></div>
-      <div class="cbox">
-        <textarea class="cta" id="cta" rows="1" placeholder="Message" onkeydown="onKey(event)" oninput="grow(this)"></textarea>
-        <div class="cacts">
-          <!-- Attach -->
-          <label class="cb" title="Attach photo or video" style="cursor:pointer">
-            <input type="file" accept="image/*,video/*" multiple style="display:none" onchange="attachFiles(event)">
-            <svg width="16" height="16" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
-              <rect x=".75" y="2.75" width="13.5" height="10.5" rx="1.4"/>
-              <circle cx="5" cy="6.5" r="1.3"/>
-              <path d=".75 11l3.5-3.5 3.5 3 2.5-2 4.25 4"/>
+
+      <!-- Manual form -->
+      <div class="ip-form show" id="form-manual">
+        <div class="sec-label">DESKTOP IP ADDRESS</div>
+        <div class="terminal-input-wrap">
+          <span class="ti-prefix">ws://</span>
+          <input class="ti-input" id="ip-input" type="text"
+            placeholder="192.168.1.100"
+            spellcheck="false" autocomplete="off"
+            inputmode="decimal">
+          <span class="ti-suffix" id="port-suffix">:47200</span>
+        </div>
+        <div class="ip-hint">
+          Find your computer's IP:<br>
+          Windows: <code>ipconfig</code> → IPv4 Address<br>
+          macOS: <code>ifconfig en0</code> or System Settings → Wi-Fi → Details<br>
+          Linux: <code>ip addr show</code><br>
+          The port is shown in Open Text → Settings → Network → WebSocket port.
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+          <div class="terminal-input-wrap" style="width:120px;flex-shrink:0;">
+            <span class="ti-prefix">PORT</span>
+            <input class="ti-input" id="port-input" type="number" value="47200" min="1024" max="65535" style="width:70px;">
+          </div>
+          <button class="btn-primary" id="btn-connect" onclick="doConnect()">
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1.5 6.5H11M7 2l4.5 4.5L7 11"/>
             </svg>
-          </label>
-          <!-- Mic -->
-          <button class="cb" id="micbtn" onclick="toggleRec()" title="Voice message">
-            <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
-              <rect x="5" y=".75" width="5" height="7.5" rx="2.5"/>
-              <path d="M2.5 8a5 5 0 0 0 10 0M7.5 13v1.5M5.5 14.5h4"/>
-            </svg>
+            CONNECT
           </button>
-          <!-- Send -->
-          <button class="sb" onclick="sendMsg()" title="Send">
+        </div>
+      </div>
+
+      <!-- Auto-scan form -->
+      <div class="scan-panel" id="form-scan">
+        <div class="sec-label">SUBNET SCAN</div>
+        <div class="terminal-input-wrap" style="margin-bottom:10px;">
+          <span class="ti-prefix">SUBNET</span>
+          <input class="ti-input" id="subnet-input" type="text"
+            placeholder="192.168.1"
+            spellcheck="false" autocomplete="off">
+          <span class="ti-suffix">.1–254</span>
+        </div>
+        <div class="ip-hint" style="margin-bottom:14px;">
+          Enter the first three octets of your local network.<br>
+          Example: if your IP is <code>192.168.1.42</code> enter <code>192.168.1</code>
+        </div>
+        <div class="btn-row" style="margin-top:0;margin-bottom:14px;">
+          <button class="btn-primary" id="btn-scan" onclick="doScan()">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <circle cx="6" cy="6" r="4"/><circle cx="6" cy="6" r="1.5" fill="currentColor" stroke="none"/>
+            </svg>
+            START SCAN
+          </button>
+          <button class="btn-ghost" id="btn-scan-stop" onclick="stopScan()" style="display:none;">STOP</button>
+        </div>
+        <div class="scan-log" id="scan-log">
+          <div class="log-line"><span class="log-ts">—</span><span class="log-try">Waiting to start scan...</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CONNECTED PANEL ─────────────────────────── -->
+    <div id="panel-connected">
+
+      <div class="sec-label">CONNECTED NODE</div>
+      <div class="status-bar" id="status-bar">
+        <div class="status-av" id="status-av">OT</div>
+        <div class="status-info">
+          <div class="status-name" id="status-name">Open Text Node</div>
+          <div class="status-meta" id="status-meta">ws://— · —</div>
+        </div>
+        <div class="status-actions">
+          <button class="btn-ghost" onclick="syncData()">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+              <path d="M10 2a5 5 0 1 0 1 3M10 2v3h-3"/>
+            </svg>
+            SYNC
+          </button>
+        </div>
+      </div>
+
+      <!-- Mesh map -->
+      <div class="sec-label">MESH TOPOLOGY</div>
+      <div class="mesh-canvas-wrap">
+        <div class="mesh-canvas-label">LIVE NODE MAP</div>
+        <canvas id="meshCanvas" height="220"></canvas>
+      </div>
+
+      <!-- Devices -->
+      <div class="sec-label">DEVICES IN MESH</div>
+      <div class="device-grid" id="device-grid">
+        <div style="grid-column:1/-1;font-family:var(--mono);font-size:10px;color:var(--t2);padding:8px 0;">Waiting for device list...</div>
+      </div>
+
+      <!-- Conversations -->
+      <div class="sec-label">CONVERSATIONS</div>
+      <div class="convo-list" id="convo-list">
+        <div class="convo-empty">No conversations synced yet.<br>Make sure the desktop app has conversations, then press SYNC.</div>
+      </div>
+
+      <!-- Chat pane -->
+      <div id="chat-pane">
+        <div class="chat-hd">
+          <div class="chat-hd-name" id="chat-hd-name">—</div>
+          <div class="chat-close" onclick="closeChat()">
+            <svg width="10" height="10" viewBox="0 0 10 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+              <path d="M1 1l8 8M9 1l-8 8"/>
+            </svg>
+          </div>
+        </div>
+        <div class="chat-msgs" id="chat-msgs"></div>
+        <div class="chat-compose">
+          <textarea class="compose-ta" id="compose-ta" rows="1"
+            placeholder="type a message..."
+            onkeydown="onComposeKey(event)"
+            oninput="growTA(this)"></textarea>
+          <button class="compose-send" id="compose-send" onclick="sendChatMessage()">
             <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M1.5 6.5H11M7 2l4.5 4.5L7 11"/>
             </svg>
           </button>
         </div>
       </div>
-    </div>
-  </div>
 
-  <!-- Settings (rendered in main area) -->
-  <div id="settings">
-    <div class="shd"><span class="shdtitle">Settings</span></div>
-    <div class="sbody">
-
-      <div class="ss">
-        <div class="ss-lbl">Profile</div>
-        <div class="sc">
-          <div class="sr">
-            <div class="sri"><div class="srl">Name</div><div class="srd">Shown to contacts on connected devices</div></div>
-            <input class="sinp" id="s-name" placeholder="Your name">
-          </div>
-          <div class="sr">
-            <div class="sri"><div class="srl">Phone number</div><div class="srd">Stored on this device only — used to route outgoing messages through the right device</div></div>
-            <input class="sinp" id="s-phone" type="tel" placeholder="+1 555 000 0000">
-          </div>
-          <div class="sr" style="justify-content:flex-end;gap:10px;">
-            <span class="sbadge" id="pbadge">Saved</span>
-            <button class="btn-ok" onclick="saveProfile()">Save</button>
-          </div>
+      <!-- Disconnect -->
+      <div class="sec-label" style="margin-top:32px;">CONNECTION</div>
+      <div class="disconnect-row">
+        <div class="dr-text">
+          This browser tab is connected to the Open Text mesh as a relay device.<br>
+          Messages you send are routed through the desktop app.
         </div>
-      </div>
-
-      <div class="ss">
-        <div class="ss-lbl">Appearance</div>
-        <div class="sc">
-          <div class="sr">
-            <div class="sri"><div class="srl">Color mode</div></div>
-            <div class="thopts">
-              <button class="thopt"    onclick="setTheme('light',this)">Light</button>
-              <button class="thopt on" id="th-device" onclick="setTheme('device',this)">Device</button>
-              <button class="thopt"    onclick="setTheme('dark',this)">Dark</button>
-            </div>
-          </div>
-          <div class="sr" style="flex-wrap:wrap;gap:10px;">
-            <div class="sri">
-              <div class="srl">Accent color</div>
-              <div style="margin-top:7px;">
-                <div class="scope" id="acc-scope">
-                  <button class="scb on" onclick="setScope('acc-scope',this)">This device</button>
-                  <button class="scb"    onclick="setScope('acc-scope',this)">All devices</button>
-                </div>
-              </div>
-            </div>
-            <div>
-              <div class="swatches" id="swatches">
-                <div class="sw on" style="background:#1746c6" onclick="setAccent('#1746c6',this)"></div>
-                <div class="sw"    style="background:#6d28d9" onclick="setAccent('#6d28d9',this)"></div>
-                <div class="sw"    style="background:#0369a1" onclick="setAccent('#0369a1',this)"></div>
-                <div class="sw"    style="background:#047857" onclick="setAccent('#047857',this)"></div>
-                <div class="sw"    style="background:#b45309" onclick="setAccent('#b45309',this)"></div>
-                <div class="sw"    style="background:#be123c" onclick="setAccent('#be123c',this)"></div>
-                <div class="sw"    style="background:#374151" onclick="setAccent('#374151',this)"></div>
-              </div>
-              <div style="display:flex;align-items:center;gap:6px;margin-top:7px;">
-                <span style="font-size:11.5px;color:var(--t2);">Custom</span>
-                <input type="color" id="custcol" value="#1746c6"
-                  style="width:26px;height:26px;border-radius:5px;cursor:pointer;border:1px solid var(--b1);padding:1px;background:none;"
-                  onchange="setAccent(this.value,null)">
-              </div>
-            </div>
-          </div>
-          <div class="sr">
-            <div class="sri"><div class="srl">Message text size</div></div>
-            <select class="ssel" onchange="savek('fontSize',this.value);applyFontSize(this.value)">
-              <option value="sm">Small — 13px</option>
-              <option value="md" selected>Medium — 14px</option>
-              <option value="lg">Large — 16px</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <div class="ss">
-        <div class="ss-lbl">Notifications</div>
-        <div class="sc">
-          <div class="sr">
-            <div class="sri"><div class="srl">New messages</div><div class="srd">Browser notification on incoming messages</div></div>
-            <div class="tog on" onclick="this.classList.toggle('on')"></div>
-          </div>
-          <div class="sr">
-            <div class="sri"><div class="srl">Group chats</div></div>
-            <div class="tog on" onclick="this.classList.toggle('on')"></div>
-          </div>
-          <div class="sr">
-            <div class="sri"><div class="srl">Suppress on active device</div><div class="srd">Don't notify other devices when this one is active</div></div>
-            <div class="tog on" onclick="this.classList.toggle('on')"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="ss">
-        <div class="ss-lbl">Messaging</div>
-        <div class="sc">
-          <div class="sr">
-            <div class="sri"><div class="srl">Read receipts</div><div class="srd">Let contacts know when you've read their message</div></div>
-            <div class="tog on" onclick="this.classList.toggle('on')"></div>
-          </div>
-          <div class="sr">
-            <div class="sri"><div class="srl">Typing indicators</div></div>
-            <div class="tog on" onclick="this.classList.toggle('on')"></div>
-          </div>
-          <div class="sr">
-            <div class="sri">
-              <div class="srl">Storage</div>
-              <div class="srd">All messages and settings are saved to localStorage in this browser — nothing is sent to a server</div>
-            </div>
-            <span style="font-size:11.5px;font-family:var(--fm);color:var(--ok);font-weight:600;">Local only</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="ss">
-        <div class="ss-lbl">Data</div>
-        <div class="sc">
-          <div class="sr">
-            <div class="sri"><div class="srl">Clear all messages</div><div class="srd">Permanently deletes all conversations from this device</div></div>
-            <button class="btn-d" onclick="confirmClear()">Clear</button>
-          </div>
-          <div class="sr">
-            <div class="sri"><div class="srl">Reset settings</div><div class="srd">Restores defaults — messages are kept</div></div>
-            <button class="btn-d" onclick="confirmReset()">Reset</button>
-          </div>
-        </div>
+        <button class="btn-red" onclick="doDisconnect()">DISCONNECT</button>
       </div>
 
     </div>
-  </div>
 
-</div><!-- /main -->
-</div><!-- /root -->
+  </main>
 
-<!-- ─── MODALS ─────────────────────────────── -->
-<!-- Disconnect -->
-<div class="mbg" id="m-disc">
-  <div class="mbox">
-    <div class="mt">Remove device?</div>
-    <div class="md" id="m-disc-d"></div>
-    <div class="macts">
-      <button class="btn-can" onclick="closeM('m-disc')">Cancel</button>
-      <button class="btn-ok danger" onclick="doDisconnect()">Remove</button>
+  <!-- Footer -->
+  <footer>
+    <span>OPEN TEXT · DEVICE CONNECTOR · v0.1.0</span>
+    <div class="footer-r">
+      <span id="footer-ws">WS: IDLE</span>
+      <span id="footer-ping">PING: —</span>
     </div>
-  </div>
-</div>
+  </footer>
 
-<!-- Rename -->
-<div class="mbg" id="m-rename">
-  <div class="mbox">
-    <div class="mt">Rename device</div>
-    <div class="md">The name will sync to all connected devices.</div>
-    <input class="mi" id="m-ren-inp" placeholder="Device name">
-    <div class="macts">
-      <button class="btn-can" onclick="closeM('m-rename')">Cancel</button>
-      <button class="btn-ok" onclick="doRename()">Save</button>
-    </div>
-  </div>
-</div>
-
-<!-- New conversation -->
-<div class="mbg" id="m-newc">
-  <div class="mbox">
-    <div class="mt">New conversation</div>
-    <div class="mrow">
-      <button class="mtype on" id="mt-dir" onclick="setConvoType('direct')">
-        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="6.5" cy="4" r="2.5"/><path d="M1 13c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/></svg>
-        Direct
-      </button>
-      <button class="mtype" id="mt-grp" onclick="setConvoType('group')">
-        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="5" cy="4" r="2"/><circle cx="9.5" cy="4" r="1.7"/><path d=".5 13c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4M9.5 9c1.7.3 3 1.2 3 4"/></svg>
-        Group
-      </button>
-    </div>
-    <input class="mi" id="m-contact" placeholder="Name or phone number">
-    <div id="m-gname-wrap" style="display:none;">
-      <input class="mi" id="m-gname" placeholder="Group name (optional)">
-    </div>
-    <div class="macts">
-      <button class="btn-can" onclick="closeM('m-newc')">Cancel</button>
-      <button class="btn-ok" onclick="createConvo()">Start</button>
-    </div>
-  </div>
-</div>
-
-<!-- Generic confirm -->
-<div class="mbg" id="m-confirm">
-  <div class="mbox">
-    <div class="mt" id="mc-t"></div>
-    <div class="md" id="mc-d"></div>
-    <div class="macts">
-      <button class="btn-can" onclick="closeM('m-confirm')">Cancel</button>
-      <button class="btn-ok danger" id="mc-btn">Confirm</button>
-    </div>
-  </div>
 </div>
 
 <div id="toasts"></div>
 
 <script>
-/* ══════════════════════════════════════
-   STATE
-══════════════════════════════════════ */
-const LS_KEY = 'opentext_v4';
-let S = {};
-try { S = JSON.parse(localStorage.getItem(LS_KEY) || '{}'); } catch(_) {}
+/* ════════════════════════════════════════════════════════
+   Open Text — Device Connector
+   Connects a browser tab to a running Open Text desktop
+   app via WebSocket on the local network.
+════════════════════════════════════════════════════════ */
 
-const DEFAULTS = {
-  theme: 'device',
-  accent: '#1746c6',
-  name: '',
-  phone: '',
-  fontSize: 'md',
-  activeConvo: null,
-  devices: [
-    { id:'dv1', name:'This device', isThis:true,  pri:0 },
-    { id:'dv2', name:'Device 2',    isThis:false, pri:1 },
-    { id:'dv3', name:'Device 3',    isThis:false, pri:2 },
-  ],
-  convos: [
-    {
-      id:'cv1', type:'direct', name:'Alex Rivera', color:'#6d28d9',
-      preview:'Sounds good, see you there.', time:'2:41 PM', unread:0, ts:Date.now()-22*60e3,
-      msgs:[
-        {id:'m1',dir:'in', type:'text',  text:"Hey, are you free tomorrow morning?",       time:'2:28 PM', sender:'Alex Rivera'},
-        {id:'m2',dir:'out',type:'text',  text:"Yeah, what did you have in mind?",            time:'2:30 PM'},
-        {id:'m3',dir:'in', type:'text',  text:"New café opened on Maple. Brunch?",           time:'2:32 PM', sender:'Alex Rivera'},
-        {id:'m4',dir:'out',type:'voice', dur:'0:09',                                         time:'2:35 PM'},
-        {id:'m5',dir:'in', type:'text',  text:"Ha! 11am works?",                             time:'2:39 PM', sender:'Alex Rivera'},
-        {id:'m6',dir:'out',type:'text',  text:"Sounds good, see you there.",                 time:'2:41 PM'},
-      ]
-    },
-    {
-      id:'cv2', type:'group', name:'Weekend crew', color:'#047857',
-      preview:"Jordan: I'll grab snacks", time:'Yesterday', unread:2, ts:Date.now()-19*3600e3,
-      msgs:[
-        {id:'g1',dir:'in', type:'text', text:"Beach Saturday?",               time:'4:00 PM', sender:'Jordan'},
-        {id:'g2',dir:'in', type:'text', text:"I'm in. What time?",            time:'4:03 PM', sender:'Sam'},
-        {id:'g3',dir:'out',type:'text', text:"10am works for me.",            time:'4:06 PM'},
-        {id:'g4',dir:'in', type:'text', text:"I'll grab snacks",              time:'4:08 PM', sender:'Jordan'},
-      ]
-    },
-    {
-      id:'cv3', type:'direct', name:'Morgan Lee', color:'#b45309',
-      preview:'That view though!', time:'Mon', unread:1, ts:Date.now()-3*24*3600e3,
-      msgs:[
-        {id:'j1',dir:'in', type:'text',  text:"That view though!",  time:'10:02 AM', sender:'Morgan Lee'},
-        {id:'j2',dir:'in', type:'image', src:'https://picsum.photos/seed/ot_m/400/280', time:'10:03 AM', sender:'Morgan Lee'},
-        {id:'j3',dir:'out',type:'text',  text:"Where is that?!",    time:'10:09 AM'},
-      ]
-    },
-    {
-      id:'cv4', type:'direct', name:'Taylor Kim', color:'#0369a1',
-      preview:'On my way.', time:'Sun', unread:0, ts:Date.now()-4*24*3600e3,
-      msgs:[
-        {id:'t1',dir:'out',type:'text', text:"Almost there, 5 min",  time:'3:08 PM'},
-        {id:'t2',dir:'in', type:'text', text:"On my way.",           time:'3:10 PM', sender:'Taylor Kim'},
-      ]
-    },
-  ]
-};
+// ── State ──────────────────────────────────────────────
+let ws          = null;
+let wsUrl       = null;
+let pingTimer   = null;
+let pingTs      = null;
+let scanAbort   = false;
+let scanActive  = false;
+let meshNodes   = [];       // [{id, name, isThis, online, x, y}]
+let convos      = [];
+let messages    = {};       // convoId -> []
+let activeConvo = null;
+let thisDeviceId = 'browser-' + Math.random().toString(36).slice(2,10);
+let typingTimer  = null;
 
-// Merge saved over defaults
-function merge(def, src) {
-  const r = {...def};
-  for (const k in src) {
-    if (src[k] !== undefined && src[k] !== null) r[k] = src[k];
-  }
-  return r;
+// ── Helpers ────────────────────────────────────────────
+const g   = id  => document.getElementById(id);
+const esc = s   => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const ini = n   => n.trim().split(/\s+/).slice(0,2).map(w=>w[0]).join('').toUpperCase();
+function fmtTime(ts) {
+  return new Date(ts).toLocaleTimeString(undefined, {hour:'numeric',minute:'2-digit'});
 }
-S = merge(DEFAULTS, S);
-if (!S.convos?.length) S.convos = DEFAULTS.convos;
-if (!S.devices?.length) S.devices = DEFAULTS.devices;
-
-function persist() { localStorage.setItem(LS_KEY, JSON.stringify(S)); }
-
-/* ══════════════════════════════════════
-   HELPERS
-══════════════════════════════════════ */
-const g   = id => document.getElementById(id);
-const esc = s  => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-const ini = n  => n.trim().split(/\s+/).slice(0,2).map(w=>w[0]).join('').toUpperCase();
-
-/* ══════════════════════════════════════
-   RUNTIME STATE
-══════════════════════════════════════ */
-let discTarget = null;
-let renTarget  = null;
-let newConvoType = 'direct';
-let isRec = false, recInt = null, recSec = 0;
-let attached = [];
-
-/* ══════════════════════════════════════
-   INIT
-══════════════════════════════════════ */
-function init() {
-  applyTheme(S.theme, false);
-  applyAccent(S.accent, false);
-  applyFontSize(S.fontSize || 'md');
-
-  renderChatList();
-  renderDevices();
-
-  g('s-name').value  = S.name  || '';
-  g('s-phone').value = S.phone || '';
-
-  if (!S.name) {
-    showMain('setup');
-  } else if (S.activeConvo && S.convos.find(c => c.id === S.activeConvo)) {
-    openConvo(S.activeConvo, false);
-    showMain('chat');
-  } else {
-    showMain('empty');
-  }
+function fmtDate(ts) {
+  const d = new Date(ts), now = new Date();
+  const diff = (now-d)/86400000;
+  if (diff<1 && d.getDate()===now.getDate()) return 'TODAY';
+  if (diff<2) return 'YESTERDAY';
+  return d.toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'}).toUpperCase();
+}
+function memberColor(name, fb) {
+  if (!name) return fb||'#555';
+  const p=['#6d28d9','#be123c','#047857','#b45309','#0369a1','#be185d','#1746c6'];
+  let h=0; for(const c of name) h=(h*31+c.charCodeAt(0))%p.length;
+  return p[h];
 }
 
-/* ══════════════════════════════════════
-   VIEW SWITCHER
-══════════════════════════════════════ */
-function showMain(which) {
-  const views = ['setup','empty','chat','settings'];
-  views.forEach(id => {
-    const el = g(id);
-    if (!el) return;
-    if (id === 'settings') {
-      el.classList.remove('show');
-    } else {
-      el.style.display = 'none';
+// ── Toast ──────────────────────────────────────────────
+function toast(msg, type='info') {
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.innerHTML = `<span class="toast-dot"></span>${esc(msg)}`;
+  g('toasts').appendChild(t);
+  setTimeout(() => {
+    t.style.opacity='0'; t.style.transition='.2s';
+    setTimeout(() => t.remove(), 220);
+  }, 3000);
+}
+
+// ── Method selection ───────────────────────────────────
+function selectMethod(m) {
+  document.querySelectorAll('.method-card').forEach(c => c.classList.remove('active'));
+  g('mc-'+m).classList.add('active');
+  g('form-manual').classList.toggle('show', m==='manual');
+  g('form-scan').classList.toggle('show',   m==='scan');
+}
+
+// ── WebSocket connection ───────────────────────────────
+function doConnect() {
+  const ip   = g('ip-input').value.trim();
+  const port = parseInt(g('port-input').value) || 47200;
+  if (!ip) { toast('Enter an IP address', 'err'); g('ip-input').focus(); return; }
+
+  const url = `ws://${ip}:${port}`;
+  connectToUrl(url);
+}
+
+function connectToUrl(url) {
+  if (ws) { ws.close(); ws=null; }
+
+  setConnStatus('scanning', 'CONNECTING...');
+  g('btn-connect').disabled = true;
+
+  ws    = new WebSocket(url);
+  wsUrl = url;
+
+  const timeout = setTimeout(() => {
+    if (ws && ws.readyState !== WebSocket.OPEN) {
+      ws.close(); ws=null;
+      setConnStatus('', 'DISCONNECTED');
+      g('btn-connect').disabled = false;
+      toast(`Could not connect to ${url}`, 'err');
     }
+  }, 6000);
+
+  ws.onopen = () => {
+    clearTimeout(timeout);
+    onConnected(url);
+  };
+  ws.onmessage = e => {
+    try { handleMessage(JSON.parse(e.data)); } catch(_) {}
+  };
+  ws.onclose = () => {
+    clearTimeout(timeout);
+    if (g('panel-connected').classList.contains('show')) {
+      toast('Connection lost — reconnecting...', 'warn');
+      setTimeout(() => connectToUrl(wsUrl), 3000);
+    }
+    onDisconnected();
+  };
+  ws.onerror = () => {
+    clearTimeout(timeout);
+    g('btn-connect').disabled = false;
+  };
+}
+
+function onConnected(url) {
+  setConnStatus('connected', 'CONNECTED');
+  g('btn-connect').disabled = false;
+
+  // Show connected panel
+  g('panel-connect').style.display    = 'none';
+  const cp = g('panel-connected');
+  cp.classList.add('show');
+
+  // Update status bar
+  g('status-meta').textContent = `${url} · browser relay`;
+  g('footer-ws').textContent   = `WS: ${url}`;
+
+  // Send hello handshake
+  wsSend({
+    type:     'hello',
+    deviceId: thisDeviceId,
+    hostname: 'Browser (' + (navigator.platform || 'web') + ')',
+    platform: 'browser',
   });
 
-  const t = g(which);
-  if (!t) return;
-  if (which === 'settings') {
-    t.classList.add('show');
-    t.style.display = 'flex';
-    t.style.flexDirection = 'column';
-    t.style.flex = '1';
-    t.style.overflow = 'hidden';
-  } else {
-    t.style.display = 'flex';
-    t.style.flexDirection = 'column';
-    t.style.flex = '1';
-    t.style.overflow = 'hidden';
+  // Start ping loop
+  startPing();
+
+  // Request sync immediately
+  setTimeout(syncData, 500);
+
+  toast('Connected to Open Text node', 'ok');
+}
+
+function onDisconnected() {
+  if (pingTimer) { clearInterval(pingTimer); pingTimer=null; }
+  setConnStatus('', 'DISCONNECTED');
+  g('footer-ws').textContent   = 'WS: IDLE';
+  g('footer-ping').textContent = 'PING: —';
+}
+
+function doDisconnect() {
+  if (ws) { ws.close(); ws=null; }
+  wsUrl = null;
+  g('panel-connected').classList.remove('show');
+  g('panel-connect').style.display = '';
+  setConnStatus('', 'DISCONNECTED');
+  convos = []; messages = {}; activeConvo = null;
+  meshNodes = [];
+  renderConvos(); drawMesh();
+  closeChat();
+  toast('Disconnected', 'warn');
+}
+
+// ── Ping ───────────────────────────────────────────────
+function startPing() {
+  if (pingTimer) clearInterval(pingTimer);
+  pingTimer = setInterval(() => {
+    if (!ws || ws.readyState !== WebSocket.OPEN) return;
+    pingTs = Date.now();
+    wsSend({ type:'ping' });
+  }, 5000);
+}
+
+// ── WS send ────────────────────────────────────────────
+function wsSend(obj) {
+  if (!ws || ws.readyState !== WebSocket.OPEN) return;
+  ws.send(JSON.stringify(obj));
+}
+
+// ── Message handler ────────────────────────────────────
+function handleMessage(msg) {
+  switch (msg.type) {
+
+    case 'pong':
+    case 'hello-ack': {
+      if (pingTs) {
+        g('footer-ping').textContent = `PING: ${Date.now()-pingTs}ms`;
+        pingTs = null;
+      }
+      if (msg.type === 'hello-ack') {
+        if (msg.hostname) g('status-name').textContent = msg.hostname;
+        const av = ini(msg.hostname || 'OT');
+        g('status-av').textContent = av;
+      }
+      break;
+    }
+
+    case 'sync-response': {
+      if (msg.convos) {
+        convos = msg.convos;
+        renderConvos();
+        toast(`Synced ${convos.length} conversation${convos.length!==1?'s':''}`, 'ok');
+      }
+      break;
+    }
+
+    case 'messages-response': {
+      const { convoId, messages: msgs } = msg;
+      if (convoId && msgs) {
+        messages[convoId] = msgs;
+        if (activeConvo?.id === convoId) renderChatMessages();
+      }
+      break;
+    }
+
+    case 'devices:updated':
+    case 'devices-list': {
+      const devs = msg.devices || msg.data || [];
+      renderDevices(devs);
+      updateMeshNodes(devs);
+      break;
+    }
+
+    case 'message:new':
+    case 'incoming-message': {
+      const { convoId, message } = msg;
+      if (!convoId || !message) break;
+      if (!messages[convoId]) messages[convoId] = [];
+      messages[convoId].push(message);
+      // Update convo preview
+      const c = convos.find(x => x.id === convoId);
+      if (c) {
+        c.lastMessage = { text: message.text||`[${message.type}]`, dir:message.dir, time:message.timestamp };
+        c.updatedAt   = message.timestamp;
+        if (message.dir==='in') c.unread=(c.unread||0)+1;
+        renderConvos();
+      }
+      if (activeConvo?.id === convoId) {
+        removeTypingIndicator();
+        appendChatMessage(message);
+      } else {
+        toast(`New message in ${c?.name||'unknown'}`, 'info');
+      }
+      break;
+    }
+
+    case 'message:status': {
+      const { msgId, status } = msg;
+      const el = document.querySelector(`.cm-bub[data-id="${msgId}"] .cm-status`);
+      if (el) el.textContent = status==='sent'?'✓' : status==='delivered'?'✓✓' : status==='failed'?'✗' : '';
+      break;
+    }
+
+    case 'typing': {
+      const { convoId, name, active, deviceId } = msg;
+      if (deviceId === thisDeviceId) break;
+      if (activeConvo?.id !== convoId) break;
+      if (active) showTypingIndicator(name||'Someone');
+      else        removeTypingIndicator();
+      break;
+    }
+
+    case 'device-rename': {
+      toast(`Device renamed: ${msg.name}`, 'info');
+      syncData();
+      break;
+    }
   }
 }
 
-function switchPanel(name, btn) {
-  document.querySelectorAll('.rb').forEach(b => b.classList.remove('on'));
-  btn.classList.add('on');
+// ── Sync ───────────────────────────────────────────────
+function syncData() {
+  wsSend({ type:'sync-request' });
+  wsSend({ type:'devices-request' });
+}
 
-  if (name === 'settings') {
-    // Keep chats pane visible in sidebar, show settings in main
-    document.querySelectorAll('.pane').forEach(p => p.classList.remove('show'));
-    g('pane-chats').classList.add('show');
-    showMain('settings');
+// ── Conn status pill ───────────────────────────────────
+function setConnStatus(cls, label) {
+  const pill = g('conn-pill');
+  pill.className = 'conn-pill' + (cls ? ' '+cls : '');
+  g('conn-label').textContent = label;
+}
+
+// ── Auto scan ──────────────────────────────────────────
+let scanQueue = [];
+let scanWorkers = 0;
+const SCAN_CONCURRENCY = 12;
+const SCAN_TIMEOUT_MS  = 1200;
+const SCAN_PORT        = 47200;
+
+function doScan() {
+  if (scanActive) return;
+  const subnet = g('subnet-input').value.trim();
+  if (!subnet || !/^\d+\.\d+\.\d+$/.test(subnet)) {
+    toast('Enter a valid subnet prefix like 192.168.1', 'err');
     return;
   }
 
-  // Leaving settings: restore main content
-  if (g('settings').classList.contains('show')) {
-    if (!S.name) {
-      showMain('setup');
-    } else if (S.activeConvo && S.convos.find(c => c.id === S.activeConvo)) {
-      showMain('chat');
-    } else {
-      showMain('empty');
+  scanActive = true; scanAbort = false;
+  g('btn-scan').disabled = true;
+  g('btn-scan-stop').style.display = '';
+  setConnStatus('scanning', 'SCANNING...');
+
+  const log = g('scan-log');
+  log.innerHTML = '';
+  addLog('scan', `Starting scan of ${subnet}.1-254 on port ${SCAN_PORT}...`);
+
+  scanQueue = Array.from({length:254}, (_,i) => `${subnet}.${i+1}`);
+  scanWorkers = 0;
+
+  function runNext() {
+    if (scanAbort || scanQueue.length===0) {
+      scanWorkers--;
+      if (scanWorkers <= 0) finishScan(false);
+      return;
     }
+    const ip = scanQueue.shift();
+    scanWorkers++;
+    probeHost(ip, SCAN_PORT).then(found => {
+      if (found && !scanAbort) {
+        addLog('ok', `✓ Found Open Text at ${ip}:${SCAN_PORT}`);
+        scanAbort = true;
+        finishScan(true, `${ip}`, SCAN_PORT);
+      } else if (!found) {
+        addLog('try', `  ${ip} — no response`);
+      }
+      runNext();
+    });
   }
 
-  document.querySelectorAll('.pane').forEach(p => p.classList.remove('show'));
-  const p = g('pane-' + name);
-  if (p) p.classList.add('show');
+  for (let i=0; i<Math.min(SCAN_CONCURRENCY, scanQueue.length); i++) {
+    scanWorkers++;
+    runNext();
+    scanWorkers--; // compensate the extra increment above
+  }
+  // Actually: simpler worker model
+  scanWorkers = 0;
+  scanQueue = Array.from({length:254}, (_,i) => `${subnet}.${i+1}`);
+
+  function spawnWorker() {
+    if (scanAbort || scanQueue.length===0) return;
+    const ip = scanQueue.shift();
+    scanWorkers++;
+    probeHost(ip, SCAN_PORT).then(found => {
+      scanWorkers--;
+      if (found && !scanAbort) {
+        addLog('ok', `✓ Found Open Text at ${ip}:${SCAN_PORT}`);
+        scanAbort = true;
+        finishScan(true, ip, SCAN_PORT);
+        return;
+      }
+      spawnWorker();
+    });
+  }
+  for (let i=0; i<SCAN_CONCURRENCY; i++) spawnWorker();
 }
 
-/* ══════════════════════════════════════
-   SETUP
-══════════════════════════════════════ */
-function finishSetup() {
-  const name  = g('su-name').value.trim();
-  const phone = g('su-phone').value.trim();
-  if (!name) { toast('Please enter your name', 'err'); return; }
-  S.name = name; S.phone = phone;
-  g('s-name').value  = name;
-  g('s-phone').value = phone;
-  persist();
-  showMain('empty');
-}
-
-/* ══════════════════════════════════════
-   CHAT LIST
-══════════════════════════════════════ */
-function renderChatList(filter = '') {
-  const sorted = [...S.convos]
-    .filter(c => c.name.toLowerCase().includes(filter.toLowerCase()))
-    .sort((a, b) => (b.ts || 0) - (a.ts || 0));
-
-  g('chatList').innerHTML = sorted.map(c => `
-    <div class="cr${c.id === S.activeConvo ? ' on' : ''}" onclick="openConvo('${c.id}')">
-      <div class="av${c.type === 'group' ? ' grp' : ''}" style="background:${c.color}">${ini(c.name)}</div>
-      <div class="ci">
-        <div class="cn">${esc(c.name)}</div>
-        <div class="cpv">${esc(c.preview)}</div>
-      </div>
-      <div class="cm">
-        <span class="ct">${esc(c.time)}</span>
-        ${c.unread > 0 ? `<span class="ub">${c.unread}</span>` : ''}
-      </div>
-    </div>
-  `).join('');
-}
-
-function filterChats(v) { renderChatList(v); }
-
-/* ══════════════════════════════════════
-   OPEN CONVERSATION
-══════════════════════════════════════ */
-function openConvo(id, switchView = true) {
-  const c = S.convos.find(x => x.id === id);
-  if (!c) return;
-  c.unread = 0;
-  S.activeConvo = id;
-  persist();
-  renderChatList(g('searchInp').value);
-  if (switchView) showMain('chat');
-  renderHeader(c);
-  renderMsgs(c);
-}
-
-/* ══════════════════════════════════════
-   CHAT HEADER
-══════════════════════════════════════ */
-function renderHeader(c) {
-  const typeIcon = c.type === 'group'
-    ? `<svg width="10" height="10" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="5" cy="4" r="2"/><circle cx="9.5" cy="4" r="1.7"/><path d=".5 13c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4M9.5 9c1.7.3 3 1.2 3 4"/></svg>`
-    : `<svg width="10" height="10" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="6.5" cy="4" r="2.5"/><path d="M1 13c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/></svg>`;
-
-  g('chd').innerHTML = `
-    <div class="av${c.type === 'group' ? ' grp' : ''}" style="background:${c.color};width:30px;height:30px;font-size:11px;">${ini(c.name)}</div>
-    <div class="chi">
-      <div class="chn">${esc(c.name)}</div>
-      <div class="chm">
-        ${typeIcon}
-        ${c.type === 'group' ? 'Group' : 'Direct'}
-        <span class="chm-sep"></span>
-        Routes through connected devices
-      </div>
-    </div>
-    <button class="hb" onclick="toast('Calls are not implemented in this demo','info')" title="Call">
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
-        <path d="M2 2s-1.2 2-1.2 4.5C.8 10.8 5 14 9 14c2.5 0 4.2-1.5 4.2-1.5L11 10.2l-1.3.9s-1.5.1-2.5-1L5.8 8.7C4.8 7.7 4.8 6.2 4.8 6.2L5.8 5 3.5 2.5 2 2z"/>
-      </svg>
-    </button>
-    <button class="hb" onclick="toast('Video calls are not implemented in this demo','info')" title="Video call">
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
-        <rect x=".75" y="3.75" width="9" height="6.5" rx="1.3"/>
-        <path d="M9.75 6.5l4-2v5l-4-2"/>
-      </svg>
-    </button>
-  `;
-}
-
-/* ══════════════════════════════════════
-   RENDER MESSAGES
-══════════════════════════════════════ */
-function memberColor(name, fallback) {
-  if (!name) return fallback;
-  const palette = ['#6d28d9','#be123c','#047857','#b45309','#0369a1','#be185d','#1746c6'];
-  let h = 0;
-  for (const ch of name) h = (h * 31 + ch.charCodeAt(0)) % palette.length;
-  return palette[h];
-}
-
-function renderMsgs(c) {
-  const el = g('msgs');
-  let html = `<div class="dsep">Today</div>`;
-  let prevDir = null, prevSender = null;
-
-  c.msgs.forEach(m => {
-    const first = m.dir !== prevDir || m.sender !== prevSender;
-    const isGroup = c.type === 'group';
-    const gap = first && prevDir ? 'margin-top:7px;' : 'margin-top:1px;';
-
-    if (m.dir === 'in' && first && isGroup && m.sender)
-      html += `<div class="slbl">${esc(m.sender)}</div>`;
-
-    html += `<div class="mr ${m.dir}" style="${gap}">`;
-    if (m.dir === 'in') {
-      html += first
-        ? `<div class="mav" style="background:${memberColor(m.sender, c.color)}">${(m.sender||'?')[0].toUpperCase()}</div>`
-        : `<div class="mav gh"></div>`;
-    }
-
-    const fc = first ? (m.dir === 'out' ? ' fo' : ' fi') : '';
-
-    if (m.type === 'text') {
-      html += `<div class="bub ${m.dir}${fc}">${esc(m.text)}<span class="bts">${esc(m.time)}${m.dir === 'out' ? ' ✓✓' : ''}</span></div>`;
-
-    } else if (m.type === 'voice') {
-      const bars = Array.from({length:22}, (_,i) => {
-        const h = 3 + Math.abs(Math.sin(i * .9 + .3)) * 18;
-        return `<span style="height:${h}px"></span>`;
-      }).join('');
-      html += `<div class="bub ${m.dir} vbub${fc}">
-        <button class="vpb" onclick="togglePlay(this)">
-          <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><polygon points="1,.5 9.5,5 1,9.5"/></svg>
-        </button>
-        <div class="vwav">${bars}</div>
-        <span class="vdur">${esc(m.dur || '0:08')}</span>
-      </div>`;
-
-    } else if (m.type === 'image') {
-      html += `<div class="bub ${m.dir} ibub${fc}">
-        <img src="${m.src}" loading="lazy" alt="">
-        <span class="bts" style="padding:2px 4px 0;">${esc(m.time)}</span>
-      </div>`;
-
-    } else if (m.type === 'video') {
-      html += `<div class="bub ${m.dir} vvbub${fc}">
-        <div class="vvth">
-          <img src="${m.thumb || 'https://picsum.photos/seed/vid/320/180'}" alt="">
-          <div class="vvpl">
-            <svg width="22" height="22" viewBox="0 0 22 22" fill="white"><polygon points="5,2 20,11 5,20"/></svg>
-          </div>
-        </div>
-        <span class="bts" style="padding:2px 4px 0;">${esc(m.time)}</span>
-      </div>`;
-    }
-
-    html += '</div>';
-    prevDir = m.dir;
-    prevSender = m.sender;
+function probeHost(ip, port) {
+  return new Promise(resolve => {
+    if (scanAbort) { resolve(false); return; }
+    const probe = new WebSocket(`ws://${ip}:${port}`);
+    const t = setTimeout(() => {
+      probe.close(); resolve(false);
+    }, SCAN_TIMEOUT_MS);
+    probe.onopen  = () => { clearTimeout(t); probe.close(); resolve(true); };
+    probe.onerror = () => { clearTimeout(t); resolve(false); };
   });
+}
 
-  el.innerHTML = html;
+function finishScan(found, ip, port) {
+  scanActive  = false;
+  g('btn-scan').disabled   = false;
+  g('btn-scan-stop').style.display = 'none';
+
+  if (!found) {
+    addLog('warn', 'Scan complete — no Open Text nodes found.');
+    setConnStatus('', 'DISCONNECTED');
+    toast('No nodes found. Make sure the desktop app is running.', 'warn');
+  } else {
+    addLog('ok', `Connecting to ${ip}:${port}...`);
+    setTimeout(() => connectToUrl(`ws://${ip}:${port}`), 400);
+  }
+}
+
+function stopScan() {
+  scanAbort = true;
+  scanActive = false;
+  g('btn-scan').disabled = false;
+  g('btn-scan-stop').style.display = 'none';
+  setConnStatus('', 'DISCONNECTED');
+  addLog('warn', 'Scan stopped by user.');
+}
+
+function addLog(cls, text) {
+  const log = g('scan-log');
+  const ts  = new Date().toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  const el  = document.createElement('div');
+  el.className = 'log-line';
+  el.innerHTML = `<span class="log-ts">${ts}</span><span class="log-${cls}">${esc(text)}</span>`;
+  log.appendChild(el);
+  log.scrollTop = log.scrollHeight;
+}
+
+// ── Conversations ──────────────────────────────────────
+function renderConvos() {
+  const list = g('convo-list');
+  if (!convos.length) {
+    list.innerHTML = `<div class="convo-empty">No conversations synced yet.<br>Make sure the desktop app has conversations, then press SYNC.</div>`;
+    return;
+  }
+  const sorted = [...convos].sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0));
+  list.innerHTML = sorted.map(c => {
+    const last    = c.lastMessage;
+    let preview   = 'No messages';
+    if (last) {
+      const who = last.dir==='out' ? 'You: ' : '';
+      preview = who + (last.text||'');
+    }
+    return `
+      <div class="convo-row${activeConvo?.id===c.id?' active':''}" data-id="${c.id}">
+        <div class="cr-av${c.type==='group'?' group':''}" style="background:${c.color||'#555'}">${ini(c.name)}</div>
+        <div class="cr-body">
+          <div class="cr-name">${esc(c.name)}</div>
+          <div class="cr-prev">${esc(preview)}</div>
+        </div>
+        <div class="cr-meta" style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+          ${(c.unread||0)>0 ? `<span class="cr-badge">${c.unread}</span>` : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+  list.querySelectorAll('.convo-row').forEach(row => {
+    row.addEventListener('click', () => openChat(row.dataset.id));
+  });
+}
+
+// ── Chat ───────────────────────────────────────────────
+function openChat(id) {
+  activeConvo = convos.find(c=>c.id===id);
+  if (!activeConvo) return;
+  activeConvo.unread = 0;
+  renderConvos();
+
+  g('chat-hd-name').textContent = activeConvo.name.toUpperCase();
+  g('chat-pane').classList.add('show');
+  g('chat-pane').scrollIntoView({behavior:'smooth', block:'nearest'});
+
+  // Request messages if not cached
+  if (!messages[id]) {
+    wsSend({ type:'messages-request', convoId: id });
+    g('chat-msgs').innerHTML = `<div style="font-family:var(--mono);font-size:10px;color:var(--t2);text-align:center;padding:20px;">Loading messages...</div>`;
+  } else {
+    renderChatMessages();
+  }
+}
+
+function closeChat() {
+  activeConvo = null;
+  g('chat-pane').classList.remove('show');
+  renderConvos();
+}
+
+function renderChatMessages() {
+  const el   = g('chat-msgs');
+  const msgs = messages[activeConvo?.id] || [];
+  el.innerHTML = '';
+
+  if (!msgs.length) {
+    el.innerHTML = `<div style="font-family:var(--mono);font-size:10px;color:var(--t2);text-align:center;padding:20px;">No messages yet</div>`;
+    return;
+  }
+
+  let prevDate=null, prevDir=null, prevSender=null;
+  msgs.forEach(m => {
+    const dl = fmtDate(m.timestamp);
+    if (dl!==prevDate) {
+      const d=document.createElement('div'); d.className='cm-dsep'; d.textContent=dl; el.appendChild(d);
+      prevDate=dl; prevDir=null; prevSender=null;
+    }
+    const first = m.dir!==prevDir || m.senderName!==prevSender;
+    if (m.dir==='in' && first && activeConvo?.type==='group' && m.senderName) {
+      const l=document.createElement('div'); l.className='cm-sender'; l.textContent=m.senderName; el.appendChild(l);
+    }
+    el.appendChild(mkChatMsgEl(m, first));
+    prevDir=m.dir; prevSender=m.senderName;
+  });
   el.scrollTop = el.scrollHeight;
 }
 
-/* ══════════════════════════════════════
-   SEND MESSAGE
-══════════════════════════════════════ */
-function sendMsg() {
-  const c = S.convos.find(x => x.id === S.activeConvo);
-  if (!c) return;
-  const ta   = g('cta');
-  const text = ta.value.trim();
-  if (!text && !attached.length) return;
+function appendChatMessage(m) {
+  const el = g('chat-msgs');
+  el.querySelector('div[style*="No messages"]')?.remove();
+  el.querySelector('div[style*="Loading"]')?.remove();
+  el.appendChild(mkChatMsgEl(m, true));
+  el.scrollTop = el.scrollHeight;
+}
 
-  const time = new Date().toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'});
+function mkChatMsgEl(m, first) {
+  const wrap = document.createElement('div');
+  wrap.style.marginTop = first ? '6px' : '1px';
+  const row = document.createElement('div');
+  row.className = `cm-row ${m.dir}`;
 
-  attached.forEach(f => {
-    c.msgs.push({id:'m'+Date.now()+Math.random(), dir:'out', type:f.type, src:f.src, thumb:f.src, time});
-  });
-  attached = [];
-  g('mbar').innerHTML = '';
-
-  if (text) {
-    c.msgs.push({id:'m'+Date.now(), dir:'out', type:'text', text, time});
-    ta.value = '';
-    ta.style.height = 'auto';
+  if (m.dir==='in') {
+    const av = document.createElement('div');
+    av.className = first ? 'cm-av' : 'cm-av g';
+    if (first) { av.style.background=memberColor(m.senderName,activeConvo?.color); av.textContent=(m.senderName||'?')[0].toUpperCase(); }
+    row.appendChild(av);
   }
 
-  c.preview = text || (attached.length ? 'Media' : c.msgs.at(-1)?.type === 'voice' ? 'Voice message' : 'Media');
-  c.time = time;
-  c.ts   = Date.now();
+  const fc = first ? (m.dir==='out'?'first-out':'first-in') : '';
+  const bub = document.createElement('div');
 
-  persist();
-  renderChatList(g('searchInp').value);
-  renderMsgs(c);
-  fakeReply(c);
+  if (m.type==='text') {
+    bub.className = `cm-bub ${m.dir} ${fc}`.trim();
+    bub.dataset.id = m.id;
+    bub.innerHTML = esc(m.text||'') + `<span class="cm-ts">${fmtTime(m.timestamp)}${m.dir==='out'?` <span class="cm-status">${m.status==='sent'?'✓':m.status==='delivered'?'✓✓':m.status==='failed'?'✗':'○'}</span>`:''}</span>`;
+  } else if (m.type==='voice') {
+    bub.className = `cm-bub ${m.dir} cm-voice ${fc}`.trim();
+    const bars = Array.from({length:18},(_,i)=>`<span style="height:${3+Math.abs(Math.sin(i*.9+.3))*14}px"></span>`).join('');
+    bub.innerHTML = `
+      <button class="cm-vpbtn">
+        <svg width="8" height="8" viewBox="0 0 8 8" fill="currentColor"><polygon points="1,.5 7.5,4 1,7.5"/></svg>
+      </button>
+      <div class="cm-wave">${bars}</div>
+      <span style="font-family:var(--mono);font-size:9px;opacity:.6">${esc(m.duration||'0:00')}</span>
+    `;
+  } else {
+    bub.className = `cm-bub ${m.dir} ${fc}`.trim();
+    bub.style.fontFamily = 'var(--mono)';
+    bub.style.fontSize   = '10px';
+    bub.style.opacity    = '.6';
+    bub.textContent = `[${m.type||'unknown'}]`;
+  }
+
+  row.appendChild(bub);
+  wrap.appendChild(row);
+  return wrap;
 }
 
-function fakeReply(c) {
-  const pool = {
-    direct: ['Got it.','Sure!','Sounds good.','Let me check.','On my way.','Will do.','See you then.','Nice one.'],
-    group:  ['Count me in.','Works for me.','Sounds great!','I\'ll be there.','Perfect.']
+function sendChatMessage() {
+  if (!ws || ws.readyState!==WebSocket.OPEN) { toast('Not connected', 'err'); return; }
+  if (!activeConvo) return;
+  const ta   = g('compose-ta');
+  const text = ta.value.trim();
+  if (!text) return;
+
+  const msg = {
+    id:        'br-' + Date.now() + Math.random().toString(36).slice(2,8),
+    dir:       'out',
+    type:      'text',
+    text,
+    timestamp: Date.now(),
+    senderName: 'This browser',
   };
-  const delay1 = 400 + Math.random() * 500;
-  const delay2 = 600 + Math.random() * 700;
 
-  setTimeout(() => {
-    // Show typing bubble
-    const msgsEl = g('msgs');
-    const row    = document.createElement('div');
-    row.className = 'typing';
-    row.id = 'typing-indicator';
-    const av  = document.createElement('div');
-    av.className = 'mav';
-    av.style.background = c.color;
-    av.textContent = c.name[0];
-    const bub = document.createElement('div');
-    bub.className = 'tbub';
-    for (let i=0; i<3; i++) {
-      const d = document.createElement('span');
-      d.className = 'td';
-      bub.appendChild(d);
+  // Add optimistically
+  if (!messages[activeConvo.id]) messages[activeConvo.id] = [];
+  messages[activeConvo.id].push(msg);
+  appendChatMessage(msg);
+
+  // Send via mesh relay
+  wsSend({
+    type:    'relay-message',
+    convoId: activeConvo.id,
+    message: msg,
+  });
+
+  ta.value = ''; ta.style.height='auto';
+
+  // Typing stop
+  if (typingTimer) { clearTimeout(typingTimer); typingTimer=null; }
+  wsSend({ type:'typing', deviceId:thisDeviceId, convoId:activeConvo.id, active:false });
+}
+
+function onComposeKey(e) {
+  if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); sendChatMessage(); return; }
+  // Typing indicator
+  if (!activeConvo) return;
+  wsSend({ type:'typing', deviceId:thisDeviceId, convoId:activeConvo.id, active:true });
+  if (typingTimer) clearTimeout(typingTimer);
+  typingTimer = setTimeout(() => {
+    wsSend({ type:'typing', deviceId:thisDeviceId, convoId:activeConvo.id, active:false });
+    typingTimer=null;
+  }, 2500);
+}
+
+function growTA(el) {
+  el.style.height='auto';
+  el.style.height=Math.min(el.scrollHeight,100)+'px';
+}
+
+// ── Typing indicator ───────────────────────────────────
+function showTypingIndicator(name) {
+  if (document.getElementById('typing-indicator')) return;
+  const msgs = g('chat-msgs');
+  const row  = document.createElement('div');
+  row.className='typing-row'; row.id='typing-indicator';
+  const av=document.createElement('div'); av.className='cm-av';
+  av.style.background=memberColor(name,activeConvo?.color);
+  av.textContent=(name||'?')[0].toUpperCase();
+  const bub=document.createElement('div'); bub.className='typing-bub';
+  [0,1,2].forEach(()=>{const d=document.createElement('span');d.className='tyd';bub.appendChild(d);});
+  row.append(av,bub); msgs.appendChild(row); msgs.scrollTop=msgs.scrollHeight;
+  setTimeout(removeTypingIndicator, 5000);
+}
+function removeTypingIndicator() {
+  document.getElementById('typing-indicator')?.remove();
+}
+
+// ── Devices ────────────────────────────────────────────
+function renderDevices(devs) {
+  const grid = g('device-grid');
+  if (!devs.length) {
+    grid.innerHTML = `<div style="grid-column:1/-1;font-family:var(--mono);font-size:10px;color:var(--t2);padding:8px 0;">No devices in mesh yet</div>`;
+    return;
+  }
+
+  const laptop = `<svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><rect x=".75" y="1.5" width="11.5" height="7.5" rx="1"/><path d="M0 10.5h13"/></svg>`;
+  const phone  = `<svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><rect x="3" y=".75" width="7" height="11.5" rx="1.3"/><circle cx="6.5" cy="10" r=".6" fill="currentColor" stroke="none"/></svg>`;
+
+  grid.innerHTML = devs.map(d => `
+    <div class="dev-card">
+      <div class="dev-top">
+        <div class="dev-ico">${d.platform==='android'||d.platform==='ios'?phone:laptop}</div>
+        <span class="dev-name">${esc(d.name||d.hostname||d.id)}</span>
+        <span class="dev-status-dot ${d.online?'on':'off'}"></span>
+      </div>
+      <div class="dev-tags">
+        ${d.isThis?'<span class="dtag dtag-me">HOST</span>':''}
+        ${d.id===thisDeviceId?'<span class="dtag dtag-wifi">THIS BROWSER</span>':''}
+        ${d.online&&!d.isThis?'<span class="dtag dtag-wifi">WIFI</span>':''}
+        ${!d.online&&!d.isThis?'<span class="dtag dtag-off">OFFLINE</span>':''}
+      </div>
+    </div>
+  `).join('');
+}
+
+// ── Mesh canvas ────────────────────────────────────────
+function updateMeshNodes(devs) {
+  const canvas = g('meshCanvas');
+  const W = canvas.offsetWidth || 600;
+  const H = 220;
+  const cx = W/2, cy = H/2;
+
+  meshNodes = devs.map((d, i) => {
+    const angle  = (i / devs.length) * Math.PI * 2 - Math.PI/2;
+    const radius = Math.min(W,H)*0.28;
+    return {
+      id:     d.id,
+      name:   d.name||d.hostname||'?',
+      online: d.online,
+      isThis: d.isThis,
+      x: devs.length===1 ? cx : cx + Math.cos(angle)*radius,
+      y: devs.length===1 ? cy : cy + Math.sin(angle)*radius,
+    };
+  });
+
+  // Add this browser as a node
+  meshNodes.push({
+    id: thisDeviceId, name:'Browser', online:true, isBrowser:true,
+    x: W-60, y: H-40,
+  });
+
+  drawMesh();
+}
+
+function drawMesh() {
+  const canvas = g('meshCanvas');
+  if (!canvas) return;
+  const W = canvas.offsetWidth || 600;
+  canvas.width  = W;
+  canvas.height = 220;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,W,220);
+
+  if (!meshNodes.length) return;
+
+  const green  = '#4ade80';
+  const dim    = '#166534';
+  const bg3    = '#1a1f1a';
+
+  // Draw edges
+  for (let i=0; i<meshNodes.length; i++) {
+    for (let j=i+1; j<meshNodes.length; j++) {
+      const a = meshNodes[i], b = meshNodes[j];
+      const active = a.online && b.online;
+      ctx.beginPath();
+      ctx.moveTo(a.x, a.y);
+      ctx.lineTo(b.x, b.y);
+      ctx.strokeStyle = active ? 'rgba(74,222,128,.15)' : 'rgba(74,222,128,.04)';
+      ctx.lineWidth   = 1;
+      ctx.setLineDash(active ? [] : [4,6]);
+      ctx.stroke();
+      ctx.setLineDash([]);
     }
-    row.append(av, bub);
-    msgsEl.appendChild(row);
-    msgsEl.scrollTop = msgsEl.scrollHeight;
+  }
 
-    setTimeout(() => {
-      const indicator = g('typing-indicator');
-      if (indicator) indicator.remove();
+  // Draw nodes
+  meshNodes.forEach(n => {
+    const r  = n.isThis ? 22 : n.isBrowser ? 18 : 16;
+    const c  = n.online ? green : dim;
 
-      const p      = pool[c.type] || pool.direct;
-      const text   = p[Math.floor(Math.random() * p.length)];
-      const time   = new Date().toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'});
-      const sender = c.type === 'group'
-        ? (c.msgs.find(m => m.dir === 'in')?.sender || c.name)
-        : c.name;
+    // Glow
+    if (n.online) {
+      const grd = ctx.createRadialGradient(n.x,n.y,r*0.5,n.x,n.y,r*2.5);
+      grd.addColorStop(0, 'rgba(74,222,128,.15)');
+      grd.addColorStop(1, 'transparent');
+      ctx.beginPath(); ctx.arc(n.x,n.y,r*2.5,0,Math.PI*2);
+      ctx.fillStyle=grd; ctx.fill();
+    }
 
-      c.msgs.push({id:'r'+Date.now(), dir:'in', type:'text', text, time, sender});
-      c.preview = text;
-      c.time    = time;
-      c.ts      = Date.now();
+    // Node circle
+    ctx.beginPath(); ctx.arc(n.x,n.y,r,0,Math.PI*2);
+    ctx.fillStyle = bg3;
+    ctx.strokeStyle = n.online ? 'rgba(74,222,128,.5)' : 'rgba(74,222,128,.12)';
+    ctx.lineWidth = 1.5;
+    ctx.fill(); ctx.stroke();
 
-      persist();
-      renderChatList(g('searchInp').value);
-      renderMsgs(c);
-    }, delay2);
-  }, delay1);
+    // Icon or initials
+    ctx.fillStyle = n.online ? green : dim;
+    ctx.font = `bold ${r>18?10:9}px "Space Mono", monospace`;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    const label = n.isBrowser ? 'WEB' : ini(n.name);
+    ctx.fillText(label.slice(0,3), n.x, n.y);
+
+    // Name below
+    ctx.fillStyle = n.online ? 'rgba(134,239,172,.7)' : 'rgba(74,222,128,.25)';
+    ctx.font = `${r>18?10:9}px "Space Mono", monospace`;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    ctx.fillText(n.name.slice(0,12), n.x, n.y+r+5);
+  });
 }
 
-function onKey(e) {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); }
+// Redraw on resize
+window.addEventListener('resize', () => {
+  if (meshNodes.length) drawMesh();
+});
+
+// ── Canvas animation loop (idle + live) ───────────────
+let meshAnimFrame = null;
+let lastLiveDraw  = 0;
+
+function meshAnimLoop() {
+  meshAnimFrame = requestAnimationFrame(meshAnimLoop);
+
+  if (meshNodes.length > 0) {
+    // Live: only redraw every 2s to avoid flicker
+    const now = Date.now();
+    if (now - lastLiveDraw > 2000) {
+      drawMesh();
+      lastLiveDraw = now;
+    }
+    return;
+  }
+
+  // Idle animation
+  const canvas = g('meshCanvas');
+  if (!canvas) return;
+  const W = canvas.offsetWidth || 600;
+  if (canvas.width !== W) { canvas.width = W; canvas.height = 220; }
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, W, 220);
+
+  const t = Date.now() / 1000;
+
+  // Grid
+  ctx.strokeStyle = 'rgba(74,222,128,.03)';
+  ctx.lineWidth = 1;
+  for (let x = 0; x < W; x += 32) {
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, 220); ctx.stroke();
+  }
+  for (let y = 0; y < 220; y += 32) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+  }
+
+  // Scan line
+  const sy = ((t * 40) % 260) - 20;
+  const grd = ctx.createLinearGradient(0, sy - 30, 0, sy + 30);
+  grd.addColorStop(0, 'transparent');
+  grd.addColorStop(0.5, 'rgba(74,222,128,.06)');
+  grd.addColorStop(1, 'transparent');
+  ctx.fillStyle = grd;
+  ctx.fillRect(0, sy - 30, W, 60);
+
+  // Orbiting dots
+  const cx = W / 2, cy = 110;
+  for (let i = 0; i < 3; i++) {
+    const angle  = t * 0.8 + (i / 3) * Math.PI * 2;
+    const radius = 40 + i * 18;
+    const x = cx + Math.cos(angle) * radius;
+    const y = cy + Math.sin(angle) * radius * 0.4;
+    ctx.beginPath();
+    ctx.arc(x, y, 2.5 - i * 0.5, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(74,222,128,${0.4 - i * 0.1})`;
+    ctx.fill();
+  }
+
+  // Pulsing center circle
+  const pulse = 0.5 + Math.sin(t * 2) * 0.5;
+  ctx.beginPath();
+  ctx.arc(cx, cy, 12 + pulse * 4, 0, Math.PI * 2);
+  ctx.strokeStyle = `rgba(74,222,128,${0.1 + pulse * 0.15})`;
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(cx, cy, 8, 0, Math.PI * 2);
+  ctx.strokeStyle = 'rgba(74,222,128,.3)';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  // Text
+  ctx.fillStyle = 'rgba(74,222,128,.2)';
+  ctx.font = '9px "Space Mono",monospace';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText('AWAITING NODE DATA', cx, cy + 42);
 }
-function grow(el) {
-  el.style.height = 'auto';
-  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+meshAnimLoop();
+
+// ── QR code for mobile connection ─────────────────────
+// Tiny QR-code-like visual using a data URL pattern
+// We show the ws:// URL as text + a copy button since
+// generating a real QR without a library is impractical.
+// The proper QR is shown in the "Share" panel.
+
+function buildShareUrl() {
+  const ip   = g('ip-input').value.trim()  || '—';
+  const port = g('port-input').value.trim()|| '47200';
+  return `ws://${ip}:${port}`;
 }
 
-/* ══════════════════════════════════════
-   VOICE RECORDING
-══════════════════════════════════════ */
-function toggleRec() {
-  if (isRec) { stopRec(); return; }
-  isRec = true; recSec = 0;
-  g('recbar').classList.add('on');
-  g('micbtn').classList.add('ron');
-  recInt = setInterval(() => {
-    recSec++;
-    const m = Math.floor(recSec / 60), s = recSec % 60;
-    g('rectime').textContent = `${m}:${s.toString().padStart(2, '0')}`;
+// ── Subnet auto-detect from page URL ──────────────────
+(function autoDetectSubnet() {
+  // Try to guess from the local IP via a WebRTC trick
+  try {
+    const pc = new RTCPeerConnection({ iceServers: [] });
+    pc.createDataChannel('');
+    pc.createOffer().then(o => pc.setLocalDescription(o));
+    pc.onicecandidate = e => {
+      if (!e || !e.candidate) return;
+      const m = e.candidate.candidate.match(/(\d+\.\d+\.\d+)\.\d+/);
+      if (m) {
+        const subnet = m[1];
+        const subnetInp = g('subnet-input');
+        if (!subnetInp.value) subnetInp.value = subnet;
+        // Pre-fill IP input with a guess for the host (common: .1 or .100)
+        const ipInp = g('ip-input');
+        if (!ipInp.value) ipInp.placeholder = `${subnet}.1 (detected subnet)`;
+        pc.close();
+      }
+    };
+  } catch (_) { /* RTCPeerConnection not available */ }
+})();
+
+// ── Reconnect on visibility change ────────────────────
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && wsUrl) {
+    if (!ws || ws.readyState === WebSocket.CLOSED) {
+      toast('Reconnecting...', 'warn');
+      connectToUrl(wsUrl);
+    }
+  }
+});
+
+// ── Ping display loop ──────────────────────────────────
+setInterval(() => {
+  if (!ws || ws.readyState !== WebSocket.OPEN) {
+    g('footer-ping').textContent = 'PING: —';
+    return;
+  }
+  pingTs = Date.now();
+  wsSend({ type: 'ping' });
+}, 8000);
+
+// ── Connection status in footer ────────────────────────
+setInterval(() => {
+  if (!ws) { g('footer-ws').textContent = 'WS: IDLE'; return; }
+  const states = ['CONNECTING', 'OPEN', 'CLOSING', 'CLOSED'];
+  g('footer-ws').textContent = `WS: ${states[ws.readyState] || '?'}`;
+}, 2000);
+
+// ── Notification permission request ───────────────────
+function requestNotifPermission() {
+  if ('Notification' in window && Notification.permission === 'default') {
+    Notification.requestPermission();
+  }
+}
+
+function sendNotif(title, body) {
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+  if (document.visibilityState === 'visible') return; // only notify when hidden
+  try {
+    new Notification(title, {
+      body,
+      icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="%230a0c09"/><path fill="%234ade80" d="M4 6a2 2 0 0 1 2-2h20a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H18l-5 4v-4H6a2 2 0 0 1-2-2V6z"/></svg>',
+    });
+  } catch (_) {}
+}
+
+// Hook notification into message handler
+const _origHandleMessage = handleMessage;
+// eslint-disable-next-line no-global-assign
+function handleMessageWithNotif(msg) {
+  if (msg.type === 'message:new' || msg.type === 'incoming-message') {
+    const c = convos.find(x => x.id === msg.convoId);
+    sendNotif(`Open Text — ${c?.name || 'New message'}`, msg.message?.text || '');
+  }
+  _origHandleMessage(msg);
+}
+// Patch the ws message handler to use the notif version
+const _origWsMessageHandler = ws?.onmessage;
+// We wire this via overriding the assignment on connection
+// The actual hook is done at ws.onopen time below by patching after connect.
+
+// ── Keyboard shortcuts ─────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    if (activeConvo) { closeChat(); return; }
+  }
+  // Cmd/Ctrl+K: focus IP input if not connected
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+    e.preventDefault();
+    if (!ws || ws.readyState !== WebSocket.OPEN) {
+      g('ip-input').focus();
+    }
+  }
+  // Cmd/Ctrl+R: sync
+  if ((e.metaKey || e.ctrlKey) && e.key === 'r' && ws?.readyState === WebSocket.OPEN) {
+    e.preventDefault();
+    syncData();
+  }
+});
+
+// ── IP input enter ─────────────────────────────────────
+g('ip-input').addEventListener('keydown', e => { if (e.key === 'Enter') doConnect(); });
+g('port-input').addEventListener('keydown', e => { if (e.key === 'Enter') doConnect(); });
+
+// ── Share panel ────────────────────────────────────────
+// Append a small "share this address" UI to the connected panel
+function renderSharePanel() {
+  const existing = document.getElementById('share-panel');
+  if (existing) existing.remove();
+
+  const url = wsUrl || '—';
+  const div = document.createElement('div');
+  div.id = 'share-panel';
+  div.style.cssText = `
+    margin-top:16px;
+    background:var(--bg1); border:1px solid var(--border);
+    border-radius:8px; padding:14px 16px;
+  `;
+  div.innerHTML = `
+    <div class="sec-label" style="margin-bottom:10px;">SHARE THIS NODE ADDRESS</div>
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+      <div style="
+        flex:1; min-width:200px;
+        background:var(--bg2); border:1px solid var(--border);
+        border-radius:5px; padding:8px 12px;
+        font-family:var(--mono); font-size:12px; color:var(--g1);
+        word-break:break-all; letter-spacing:.03em;
+      " id="share-url">${esc(url)}</div>
+      <button class="btn-ghost" onclick="copyShareUrl()" style="flex-shrink:0;">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <rect x="4" y="4" width="7" height="7" rx="1"/>
+          <path d="M8 4V2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h2"/>
+        </svg>
+        COPY
+      </button>
+    </div>
+    <div style="font-family:var(--mono);font-size:9px;color:var(--t2);margin-top:8px;line-height:1.9;">
+      Open this page on another device on the same Wi-Fi, choose Manual IP, and paste this address.
+    </div>
+  `;
+  // Insert before disconnect row
+  const discRow = document.querySelector('.disconnect-row');
+  if (discRow) discRow.parentNode.insertBefore(div, discRow.parentNode.querySelector('.sec-label:last-of-type'));
+  else g('panel-connected').appendChild(div);
+}
+
+function copyShareUrl() {
+  navigator.clipboard.writeText(wsUrl || '').then(() => {
+    toast('Address copied to clipboard', 'ok');
+  }).catch(() => {
+    toast('Could not copy — select the address manually', 'warn');
+  });
+}
+
+// ── Stats bar ──────────────────────────────────────────
+function renderStatsBar() {
+  const existing = document.getElementById('stats-bar');
+  if (existing) existing.remove();
+
+  const bar = document.createElement('div');
+  bar.id = 'stats-bar';
+  bar.style.cssText = `
+    display:flex; gap:16px; flex-wrap:wrap;
+    background:var(--bg1); border:1px solid var(--border);
+    border-radius:8px; padding:10px 16px; margin-bottom:24px;
+    font-family:var(--mono); font-size:10px; letter-spacing:.06em;
+  `;
+  bar.innerHTML = `
+    <div style="display:flex;gap:7px;align-items:center;">
+      <span style="color:var(--t2);">CONVOS</span>
+      <span style="color:var(--g1);" id="stat-convos">0</span>
+    </div>
+    <div style="display:flex;gap:7px;align-items:center;">
+      <span style="color:var(--t2);">DEVICES</span>
+      <span style="color:var(--g1);" id="stat-devices">0</span>
+    </div>
+    <div style="display:flex;gap:7px;align-items:center;">
+      <span style="color:var(--t2);">LATENCY</span>
+      <span style="color:var(--g1);" id="stat-ping">—</span>
+    </div>
+    <div style="display:flex;gap:7px;align-items:center;">
+      <span style="color:var(--t2);">UPTIME</span>
+      <span style="color:var(--g1);" id="stat-uptime">0s</span>
+    </div>
+    <div style="margin-left:auto;display:flex;gap:7px;align-items:center;">
+      <span style="color:var(--t2);">NODE</span>
+      <span style="color:var(--g0);" id="stat-node">—</span>
+    </div>
+  `;
+
+  // Insert after status-bar
+  const statusBar = g('status-bar');
+  statusBar.parentNode.insertBefore(bar, statusBar.nextSibling);
+}
+
+let connectedAt = null;
+function startStatsLoop() {
+  connectedAt = Date.now();
+  renderStatsBar();
+  setInterval(() => {
+    const el = {
+      convos:  g('stat-convos'),
+      devices: g('stat-devices'),
+      ping:    g('stat-ping'),
+      uptime:  g('stat-uptime'),
+      node:    g('stat-node'),
+    };
+    if (!el.convos) return;
+    el.convos.textContent  = convos.length;
+    el.devices.textContent = meshNodes.length;
+    el.ping.textContent    = g('footer-ping').textContent.replace('PING: ','');
+    const secs = Math.floor((Date.now() - connectedAt) / 1000);
+    const m = Math.floor(secs / 60), s = secs % 60;
+    el.uptime.textContent  = m > 0 ? `${m}m ${s}s` : `${s}s`;
+    el.node.textContent    = wsUrl ? wsUrl.replace('ws://','') : '—';
   }, 1000);
 }
 
-function stopRec() {
-  if (!isRec) return;
-  isRec = false;
-  clearInterval(recInt);
-  g('recbar').classList.remove('on');
-  g('micbtn').classList.remove('ron');
-
-  const c = S.convos.find(x => x.id === S.activeConvo);
-  if (!c) return;
-
-  const m = Math.floor(recSec / 60), s = recSec % 60;
-  const dur  = `${m}:${s.toString().padStart(2, '0')}`;
-  const time = new Date().toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'});
-
-  c.msgs.push({id:'v'+Date.now(), dir:'out', type:'voice', dur, time});
-  c.preview = 'Voice message';
-  c.time    = time;
-  c.ts      = Date.now();
-
-  persist();
-  renderChatList(g('searchInp').value);
-  renderMsgs(c);
+// ── Patch onConnected to wire up extras ───────────────
+const _origOnConnected = onConnected;
+function onConnected(url) {
+  _origOnConnected(url);
+  requestNotifPermission();
+  startStatsLoop();
+  setTimeout(renderSharePanel, 300);
 }
 
-function togglePlay(btn) {
-  const playing = btn.dataset.p === '1';
-  btn.dataset.p = playing ? '0' : '1';
-  btn.innerHTML = playing
-    ? '<svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><polygon points="1,.5 9.5,5 1,9.5"/></svg>'
-    : '<svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><rect x="1" y="1" width="3" height="8"/><rect x="6" y="1" width="3" height="8"/></svg>';
-  if (!playing) {
-    setTimeout(() => {
-      btn.dataset.p = '0';
-      btn.innerHTML = '<svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><polygon points="1,.5 9.5,5 1,9.5"/></svg>';
-    }, 3000);
-  }
-}
-
-/* ══════════════════════════════════════
-   FILE ATTACH
-══════════════════════════════════════ */
-function attachFiles(e) {
-  Array.from(e.target.files).forEach(f => {
-    const reader = new FileReader();
-    reader.onload = ev => {
-      attached.push({type: f.type.startsWith('video/') ? 'video' : 'image', src: ev.target.result});
-      renderMbar();
-    };
-    reader.readAsDataURL(f);
+// ── Message count badge on convo list header ──────────
+function updateConvoSectionLabel() {
+  const unread = convos.reduce((s, c) => s + (c.unread || 0), 0);
+  const label  = document.querySelector('#panel-connected .sec-label');
+  // find the CONVERSATIONS label specifically
+  const labels = document.querySelectorAll('#panel-connected .sec-label');
+  labels.forEach(l => {
+    if (l.textContent.startsWith('CONVERSATIONS')) {
+      l.textContent = unread > 0
+        ? `CONVERSATIONS — ${unread} UNREAD`
+        : 'CONVERSATIONS';
+    }
   });
-  e.target.value = '';
 }
 
-function renderMbar() {
-  g('mbar').innerHTML = attached.map((f, i) => `
-    <div class="mth">
-      ${f.type === 'image' ? `<img src="${f.src}">` : `<video src="${f.src}"></video>`}
-      <div class="mthrm" onclick="removeAttach(${i})">✕</div>
+// Patch renderConvos to also update label
+const _origRenderConvos = renderConvos;
+function renderConvos() {
+  _origRenderConvos();
+  updateConvoSectionLabel();
+}
+
+// ── New conversation button ───────────────────────────
+function insertNewConvoButton() {
+  const secLabels = document.querySelectorAll('#panel-connected .sec-label');
+  secLabels.forEach(label => {
+    if (label.textContent.includes('CONVERSATIONS') && !label.querySelector('button')) {
+      const btn = document.createElement('button');
+      btn.className = 'btn-ghost';
+      btn.style.cssText = 'padding:3px 10px;font-size:9px;margin-left:8px;';
+      btn.innerHTML = `
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+          <path d="M5 1v8M1 5h8"/>
+        </svg>
+        NEW
+      `;
+      btn.onclick = () => openNewConvoModal();
+      label.insertBefore(btn, label.querySelector('::after'));
+      label.style.display = 'flex';
+      label.style.alignItems = 'center';
+    }
+  });
+}
+
+// ── New conversation modal ─────────────────────────────
+function openNewConvoModal() {
+  const existing = document.getElementById('new-convo-modal');
+  if (existing) { existing.remove(); return; }
+
+  const modal = document.createElement('div');
+  modal.id = 'new-convo-modal';
+  modal.style.cssText = `
+    position:fixed; inset:0; z-index:300;
+    background:rgba(10,12,9,.8);
+    backdrop-filter:blur(8px);
+    display:flex; align-items:center; justify-content:center;
+    padding:20px;
+    animation:fadeIn .15s ease;
+  `;
+  modal.innerHTML = `
+    <div style="
+      background:var(--bg1); border:1px solid var(--border2);
+      border-radius:10px; padding:22px; width:340px; max-width:100%;
+      box-shadow:0 8px 40px rgba(0,0,0,.7);
+    ">
+      <div style="font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--g1);margin-bottom:14px;">NEW CONVERSATION</div>
+
+      <div style="display:flex;gap:6px;margin-bottom:12px;" id="nc-type-row">
+        <button class="btn-ghost nc-type on" data-type="direct" style="flex:1;font-size:10px;justify-content:center;">DIRECT</button>
+        <button class="btn-ghost nc-type" data-type="group" style="flex:1;font-size:10px;justify-content:center;">GROUP</button>
+      </div>
+
+      <div class="terminal-input-wrap" style="margin-bottom:8px;">
+        <span class="ti-prefix">TO</span>
+        <input class="ti-input" id="nc-contact" placeholder="name or number" spellcheck="false" autocomplete="off">
+      </div>
+      <div id="nc-group-name-wrap" style="display:none;">
+        <div class="terminal-input-wrap" style="margin-bottom:8px;">
+          <span class="ti-prefix">NAME</span>
+          <input class="ti-input" id="nc-group-name" placeholder="group name (optional)" spellcheck="false">
+        </div>
+      </div>
+
+      <div style="display:flex;gap:8px;margin-top:16px;">
+        <button class="btn-ghost" onclick="document.getElementById('new-convo-modal').remove()" style="flex:1;justify-content:center;font-size:10px;">CANCEL</button>
+        <button class="btn-primary" onclick="submitNewConvo()" style="flex:1;justify-content:center;font-size:10px;">CREATE</button>
+      </div>
     </div>
-  `).join('');
+  `;
+
+  // Type toggle
+  let ncType = 'direct';
+  modal.querySelectorAll('.nc-type').forEach(btn => {
+    btn.addEventListener('click', () => {
+      ncType = btn.dataset.type;
+      modal.querySelectorAll('.nc-type').forEach(b => b.classList.remove('on'));
+      btn.classList.add('on');
+      modal.querySelector('#nc-group-name-wrap').style.display = ncType==='group' ? 'block' : 'none';
+    });
+  });
+
+  modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+  document.body.appendChild(modal);
+  setTimeout(() => modal.querySelector('#nc-contact').focus(), 60);
+
+  window.submitNewConvo = () => {
+    const contact = modal.querySelector('#nc-contact').value.trim();
+    if (!contact) { toast('Enter a name or number', 'err'); return; }
+    const name  = ncType==='group' ? (modal.querySelector('#nc-group-name').value.trim() || contact) : contact;
+    const colors = ['#6d28d9','#be123c','#047857','#b45309','#0369a1','#be185d','#1746c6'];
+    const color  = colors[Math.floor(Math.random() * colors.length)];
+    const newConvo = {
+      id:          'wc-' + Date.now(),
+      type:        ncType,
+      name,
+      color,
+      participants: ncType==='direct' ? [{number:contact, name}] : [],
+      createdAt:   Date.now(),
+      updatedAt:   Date.now(),
+      unread:      0,
+      lastMessage: null,
+    };
+
+    // Send to desktop app to create
+    wsSend({ type: 'create-convo', convo: newConvo });
+
+    // Optimistically add locally
+    convos.unshift(newConvo);
+    messages[newConvo.id] = [];
+    renderConvos();
+    modal.remove();
+    openChat(newConvo.id);
+    toast(`Created conversation with ${name}`, 'ok');
+  };
 }
 
-function removeAttach(i) { attached.splice(i, 1); renderMbar(); }
+// ── Style injection for dynamic elements ───────────────
+const extraStyle = document.createElement('style');
+extraStyle.textContent = `
+  @keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
 
-/* ══════════════════════════════════════
-   DEVICES
-══════════════════════════════════════ */
-const DEV_ICONS = {
-  laptop: `<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><rect x=".75" y="1.75" width="12.5" height="8.5" rx="1.2"/><path d="M0 12.25h14"/></svg>`,
-  phone:  `<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><rect x="3.25" y=".75" width="7.5" height="12.5" rx="1.5"/><circle cx="7" cy="10.5" r=".7" fill="currentColor" stroke="none"/></svg>`,
+  .btn-ghost.on {
+    background: var(--g3);
+    border-color: var(--border3);
+    color: var(--g0);
+  }
+
+  .nc-type { transition: all .15s; }
+
+  #share-panel .sec-label::after { display:none; }
+
+  .terminal-input-wrap input[type=number]::-webkit-inner-spin-button,
+  .terminal-input-wrap input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+  }
+
+  /* Smooth convo row transitions */
+  .convo-row { transition: background .12s; }
+
+  /* Message image support */
+  .cm-bub img {
+    max-width: 200px; width:100%; border-radius:8px; display:block; margin-top:4px;
+  }
+
+  /* Scrollbar */
+  .chat-msgs::-webkit-scrollbar { width:3px; }
+  .chat-msgs::-webkit-scrollbar-thumb { background:var(--border2); border-radius:2px; }
+
+  /* Active convo highlight pulse */
+  .convo-row.active {
+    background: var(--bg3);
+    box-shadow: inset 2px 0 0 var(--g0);
+  }
+
+  /* Compose focus ring */
+  .compose-ta:focus {
+    box-shadow: 0 0 0 1px var(--border2);
+  }
+
+  /* Method card selected indicator */
+  .method-card.active .mc-title {
+    color: var(--g0);
+  }
+`;
+document.head.appendChild(extraStyle);
+
+// ── Patch handleMessage to include new message types ──
+// Override the ws message handler after connection to use
+// notification-aware version.
+// We do this by storing a reference and patching wsSend's receiver.
+// Since handleMessage is called directly from ws.onmessage, we
+// re-wrap it here with notification support integrated.
+
+// Wrap handleMessage with notif support in-place
+const handleMessageOriginal = handleMessage;
+window.handleMessage = function(msg) {
+  // Notify on new incoming messages when tab is hidden
+  if ((msg.type==='message:new' || msg.type==='incoming-message') && msg.message?.dir==='in') {
+    const c = convos.find(x => x.id === msg.convoId);
+    sendNotif(`${c?.name || 'Open Text'}`, msg.message?.text || '[media]');
+  }
+  handleMessageOriginal(msg);
 };
 
-function renderDevices() {
-  g('devList').innerHTML = S.devices.map(d => `
-    <div class="dr">
-      <div class="dr-top">
-        <div class="dic">${d.isThis ? DEV_ICONS.laptop : DEV_ICONS.phone}</div>
-        <span class="dn">${esc(d.name)}</span>
-        ${d.isThis ? '<span class="stag stag-me">This device</span>' : '<span class="stag stag-off">Not connected</span>'}
-      </div>
-      ${d.isThis
-        ? `<div class="dr-note">Messages originate from here. Other devices appear when Open Text is running on them and reachable on the local network.</div>`
-        : `<div class="dr-note">Priority ${d.pri + 1} — will be tried if higher-priority devices can't send.</div>
-           <div class="dbtns">
-             <button class="dbtn"     onclick="openRename('${d.id}')">Rename</button>
-             <button class="dbtn red" onclick="openDisc('${d.id}')">Remove</button>
-           </div>`
-      }
-    </div>
-  `).join('');
-}
+// ── Handle create-convo response ──────────────────────
+// Wire into existing handler — already handled above optimistically.
+// If the server sends back a confirmation, update convo id.
 
-function openDisc(id) {
-  discTarget = id;
-  const d = S.devices.find(x => x.id === id);
-  g('m-disc-d').textContent = `Remove "${d.name}" from the device list? It can be re-added later.`;
-  openM('m-disc');
-}
-function doDisconnect() {
-  S.devices = S.devices.filter(d => d.id !== discTarget);
-  discTarget = null;
-  closeM('m-disc');
-  persist(); renderDevices();
-  toast('Device removed', 'ok');
-}
-function openRename(id) {
-  renTarget = id;
-  const d = S.devices.find(x => x.id === id);
-  g('m-ren-inp').value = d.name;
-  openM('m-rename');
-}
-function doRename() {
-  const name = g('m-ren-inp').value.trim();
-  if (!name) return;
-  const d = S.devices.find(x => x.id === renTarget);
-  if (d) d.name = name;
-  renTarget = null;
-  closeM('m-rename');
-  persist(); renderDevices();
-  toast('Device renamed', 'ok');
-}
+// ── Init: try to restore last connection ──────────────
+(function tryRestoreConnection() {
+  try {
+    const saved = sessionStorage.getItem('ot_last_ws');
+    if (saved) {
+      g('ip-input').value = saved.replace(/^ws:\/\//, '').replace(/:\d+$/, '');
+      const portMatch = saved.match(/:(\d+)$/);
+      if (portMatch) g('port-input').value = portMatch[1];
+    }
+  } catch (_) {}
+})();
 
-/* ══════════════════════════════════════
-   NEW CONVERSATION
-══════════════════════════════════════ */
-function openNewConvo() { openM('m-newc'); }
+// Save last connection on connect
+const _origConnectToUrl = connectToUrl;
+window.connectToUrl = function(url) {
+  try { sessionStorage.setItem('ot_last_ws', url); } catch(_) {}
+  _origConnectToUrl(url);
+};
 
-function setConvoType(t) {
-  newConvoType = t;
-  g('mt-dir').classList.toggle('on', t === 'direct');
-  g('mt-grp').classList.toggle('on', t === 'group');
-  g('m-gname-wrap').style.display = t === 'group' ? 'block' : 'none';
-}
-
-function createConvo() {
-  const contact = g('m-contact').value.trim();
-  if (!contact) return;
-  const name   = newConvoType === 'group' ? (g('m-gname').value.trim() || contact) : contact;
-  const colors = ['#6d28d9','#be123c','#047857','#b45309','#0369a1','#be185d','#1746c6'];
-  const color  = colors[Math.floor(Math.random() * colors.length)];
-  const id     = 'cv' + Date.now();
-
-  S.convos.unshift({id, type:newConvoType, name, color, preview:'No messages yet', time:'Now', unread:0, ts:Date.now(), msgs:[]});
-  closeM('m-newc');
-  g('m-contact').value = '';
-  g('m-gname').value   = '';
-  persist();
-  renderChatList();
-  openConvo(id);
-}
-
-/* ══════════════════════════════════════
-   SETTINGS
-══════════════════════════════════════ */
-function setTheme(t, btn) {
-  applyTheme(t, true);
-  document.querySelectorAll('.thopt').forEach(b => b.classList.remove('on'));
-  btn.classList.add('on');
-}
-function applyTheme(t, p) {
-  document.documentElement.setAttribute('data-theme', t);
-  S.theme = t;
-  if (p) persist();
-}
-function cycleTheme() {
-  const ts   = ['device','light','dark'];
-  const next = ts[(ts.indexOf(S.theme) + 1) % ts.length];
-  applyTheme(next, true);
-  document.querySelectorAll('.thopt').forEach((b, i) => b.classList.toggle('on', i === ts.indexOf(next)));
-}
-function applyAccent(c, p) {
-  const r = document.documentElement.style;
-  r.setProperty('--acc',  c);
-  r.setProperty('--ach',  darken(c, 22));
-  r.setProperty('--acs',  c + '1d');
-  r.setProperty('--obg',  c);
-  S.accent = c;
-  if (p) persist();
-}
-function setAccent(c, swatch) {
-  applyAccent(c, true);
-  document.querySelectorAll('.sw').forEach(s => s.classList.remove('on'));
-  if (swatch) swatch.classList.add('on');
-  g('custcol').value = c;
-}
-function darken(hex, amt) {
-  const n = parseInt(hex.replace('#',''), 16);
-  const r = Math.max(0, (n >> 16) - amt);
-  const g_ = Math.max(0, ((n >> 8) & 255) - amt);
-  const b = Math.max(0, (n & 255) - amt);
-  return '#' + ((1<<24) + (r<<16) + (g_<<8) + b).toString(16).slice(1);
-}
-function applyFontSize(sz) {
-  const map = {sm:'13px', md:'14px', lg:'16px'};
-  document.querySelectorAll('.bub').forEach(el => { el.style.fontSize = map[sz] || '14px'; });
-}
-function setScope(id, btn) {
-  document.querySelectorAll(`#${id} .scb`).forEach(b => b.classList.remove('on'));
-  btn.classList.add('on');
-  toast('Sync scope updated', 'info');
-}
-function savek(k, v) { S[k] = v; persist(); }
-function saveProfile() {
-  S.name  = g('s-name').value.trim();
-  S.phone = g('s-phone').value.trim();
-  persist();
-  const b = g('pbadge');
-  b.classList.add('show');
-  setTimeout(() => b.classList.remove('show'), 2500);
-}
-function confirmClear() {
-  g('mc-t').textContent = 'Clear all messages?';
-  g('mc-d').textContent = 'All conversations will be permanently deleted from this device. This cannot be undone.';
-  g('mc-btn').onclick = () => {
-    S.convos = []; S.activeConvo = null;
-    persist(); renderChatList(); showMain('empty'); closeM('m-confirm');
-    toast('All messages cleared', 'ok');
-  };
-  openM('m-confirm');
-}
-function confirmReset() {
-  g('mc-t').textContent = 'Reset settings?';
-  g('mc-d').textContent = 'All customizations will be restored to defaults. Your messages are not affected.';
-  g('mc-btn').onclick = () => {
-    S.theme = 'device'; S.accent = '#1746c6';
-    applyTheme('device', true); applyAccent('#1746c6', true);
-    closeM('m-confirm');
-    toast('Settings reset to defaults', 'ok');
-  };
-  openM('m-confirm');
-}
-
-/* ══════════════════════════════════════
-   MODALS
-══════════════════════════════════════ */
-function openM(id)  { g(id).classList.add('open'); }
-function closeM(id) { g(id).classList.remove('open'); }
-
-document.querySelectorAll('.mbg').forEach(m => {
-  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
-});
-
-/* ══════════════════════════════════════
-   TOAST
-══════════════════════════════════════ */
-function toast(msg, type = 'info') {
-  const t = document.createElement('div');
-  t.className = `toast ${type}`;
-  t.innerHTML = `<span class="tdot"></span>${esc(msg)}`;
-  g('toasts').appendChild(t);
-  setTimeout(() => {
-    t.style.opacity    = '0';
-    t.style.transition = '.2s';
-    setTimeout(() => t.remove(), 220);
-  }, 2400);
-}
-
-/* ══════════════════════════════════════
-   KEYBOARD SHORTCUTS
-══════════════════════════════════════ */
-document.addEventListener('keydown', e => {
-  if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+// ── Handle paste in IP field (smart parse) ────────────
+g('ip-input').addEventListener('paste', e => {
+  const text = (e.clipboardData || window.clipboardData).getData('text').trim();
+  if (text.startsWith('ws://')) {
     e.preventDefault();
-    g('searchInp').focus();
-  }
-  if (e.key === 'Escape') {
-    document.querySelectorAll('.mbg.open').forEach(m => m.classList.remove('open'));
+    const noProto  = text.replace('ws://', '');
+    const parts    = noProto.split(':');
+    g('ip-input').value   = parts[0];
+    if (parts[1]) g('port-input').value = parts[1];
+    toast('Address pasted from clipboard', 'ok');
   }
 });
 
-/* Run */
-init();
+// ── Footer clock ──────────────────────────────────────
+setInterval(() => {
+  const now = new Date();
+  const time = now.toLocaleTimeString(undefined, {hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false});
+  const clock = document.getElementById('footer-clock');
+  if (clock) clock.textContent = time;
+}, 1000);
+
+// Inject clock into footer
+(function addFooterClock() {
+  const fr = document.querySelector('.footer-r');
+  if (!fr) return;
+  const span = document.createElement('span');
+  span.id = 'footer-clock';
+  span.textContent = new Date().toLocaleTimeString(undefined, {hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
+  fr.prepend(span);
+})();
+
+// ── Mesh node click interaction ────────────────────────
+g('meshCanvas').addEventListener('click', e => {
+  if (!meshNodes.length) return;
+  const canvas = g('meshCanvas');
+  const rect   = canvas.getBoundingClientRect();
+  const mx     = (e.clientX - rect.left) * (canvas.width / rect.width);
+  const my     = (e.clientY - rect.top)  * (canvas.height / rect.height);
+
+  for (const node of meshNodes) {
+    const r  = node.isThis ? 22 : 16;
+    const dx = mx - node.x, dy = my - node.y;
+    if (dx*dx + dy*dy <= r*r) {
+      toast(`${node.name} · ${node.online ? 'online' : 'offline'}${node.isBrowser ? ' · this browser' : ''}`, 'info');
+      return;
+    }
+  }
+});
+
+// ── Final: keyboard shortcut hint in footer ────────────
+(function addShortcutHints() {
+  const footer = document.querySelector('footer');
+  if (!footer) return;
+  const hint = document.createElement('span');
+  hint.style.cssText = 'color:var(--t3);font-size:9px;';
+  hint.textContent   = '⌘K FOCUS · ⌘R SYNC · ESC CLOSE';
+  footer.querySelector('.footer-r')?.appendChild(hint);
+})();
+
 </script>
 </body>
 </html>
